@@ -124,7 +124,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 .mini.two{grid-template-columns:repeat(2,1fr)}
 @media (min-width:900px){.mini{display:none}}
 /* під верхньою панеллю: вміст сторінки розмивається і плавно тане, щоб не визирав над нею */
-.edge{position:fixed;z-index:19;left:0;right:0;top:0;height:0;pointer-events:none;opacity:0;transition:opacity 300ms ease-out;background:linear-gradient(to bottom,rgba(242,242,244,.96) 0%,rgba(242,242,244,.82) 55%,rgba(242,242,244,0) 100%);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 calc(100% - 44px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 calc(100% - 44px),transparent 100%)}
+.edge{position:fixed;z-index:19;left:0;right:0;top:0;height:0;pointer-events:none;opacity:0;transition:opacity 300ms ease-out;background:linear-gradient(to bottom,rgba(242,242,244,.96) 0%,rgba(242,242,244,.9) calc(100% - var(--f,60px)),rgba(242,242,244,0) 100%);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 calc(100% - var(--f,60px)),transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 calc(100% - var(--f,60px)),transparent 100%)}
 .edge.on{opacity:1}
 @media (min-width:900px){.edge{display:none}}
 @media (max-width:360px){.mini .n{font-size:17px}.mini>div{padding:0 6px}}
@@ -326,7 +326,7 @@ document.querySelector('#sched summary').addEventListener('click',e=>{const d=$(
     [...L.children].slice(0,16).forEach((r,i)=>r.animate([{opacity:0,transform:'translateY(8px)',filter:'blur(3px)'},{opacity:1,transform:'none',filter:'blur(0)'}],{duration:380,delay:40+i*22,easing:'cubic-bezier(.23,1,.32,1)',fill:'backwards'}))}
   else{const h=L.offsetHeight;d.classList.add('closing');d._a=L.animate([{height:h+'px',opacity:1},{height:'0px',opacity:0}],{duration:240,easing:'cubic-bezier(.23,1,.32,1)'});d._a.onfinish=()=>{d.open=false;d.classList.remove('closing');d._a=null}}});
 /* панель зʼявляється, щойно низ великої картки зник під верхнім краєм */
-function edgeH(){const m=$('mini');$('edge').style.height=(m.offsetTop+m.offsetHeight+40)+'px'}addEventListener('resize',edgeH);
+function edgeH(){const m=$('mini');const e=$('edge');e.style.height=(m.offsetTop+m.offsetHeight)+'px';e.style.setProperty('--f',Math.round(m.offsetHeight/2)+'px')}addEventListener('resize',edgeH);
 new IntersectionObserver(([e])=>{const on=!e.isIntersecting&&e.boundingClientRect.top<0;$('mini').classList.toggle('on',on);if(on)edgeH();$('edge').classList.toggle('on',on)},{rootMargin:'-24px 0px 0px 0px'}).observe(document.querySelector('.hero'));
 addEventListener('resize',place);$('s3').addEventListener('transitionend',place);
 const segs=document.querySelectorAll('.seg');segs.forEach(x=>x.style.transition='none');
