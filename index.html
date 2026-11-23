@@ -120,7 +120,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 </style></head><body><main>
 
 <h1>Калькулятор розстрочки за моделлю ЖК «Республіка»</h1>
-<div class=top><div class=cur role=group aria-label="Валюта"><button type=button id=cu-uah aria-pressed=true>У гривнях</button><button type=button id=cu-usd aria-pressed=false>У доларах</button></div><label class=fxw id=fxw hidden>Курс ПриватБанку, продаж <input id=fx type=text inputmode=decimal autocomplete=off aria-label="Курс долара в гривнях"> ₴ за 1 $</label></div>
+<div class=top><div class=cur role=group aria-label="Валюта"><button type=button id=cu-uah aria-pressed=true>У гривнях</button><button type=button id=cu-usd aria-pressed=false>У доларах</button></div><label class=fxw id=fxw hidden><span id=fxl>Курс ПриватБанку, продаж</span> <input id=fx type=text inputmode=decimal autocomplete=off aria-label="Курс долара в гривнях"> ₴ за 1 $</label></div>
 
 <div class=lay>
   <div>
@@ -167,9 +167,9 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 const DUMMY=document.createElement('div');DUMMY.style.setProperty=()=>{};const $=id=>document.getElementById(id)||DUMMY;
 const f0=n=>Math.round(n).toLocaleString('uk-UA');
 const pct=v=>String(v).replace('.',',');
-/* валюта: усе рахується в гривнях, у доларах лише показується за курсом, який вводить менеджер */
+/* валюта: усе рахується в гривнях, у доларах лише показується. Курс щоранку о 9:00 бере з ПриватБанку дія GitHub (tools/rate.py → rate.json); поле можна змінити вручну */
 let CUR='uah',RATE=45.45;
-try{CUR=localStorage.getItem('rr-cur')||CUR;RATE=+localStorage.getItem('rr-fx')||RATE}catch(e){}
+try{CUR=localStorage.getItem('rr-cur')||CUR}catch(e){}
 const cv=x=>CUR==='usd'?x/RATE:x,sym=()=>CUR==='usd'?'$':'₴';
 const mt=x=>f0(cv(x))+' '+sym(),mb=x=>f0(cv(x))+'<small>'+sym()+'</small>';
 
@@ -185,13 +185,13 @@ function place(){if(!document.getElementById('kd'))return;const s3=$('s3'),bar=s
 function term(m){const y=Math.floor(m/12),r=m%12;return !y?r+' міс':r===0?yr(y):r===6?y+',5 року':yr(y)+' '+r+' міс'}
 /* строк після ключів кроком пів року: 4 роки 6 міс, 5 років, 6 міс */
 function ym(m){const y=Math.floor(m/12),r=m%12;return !y?r+' міс':r?yr(y)+' '+r+' міс':yr(y)}
-/* графік по місяцях: до ключів одним рядком, після ключів кожен місяць */
+/* графік по місяцях: кожен місяць до ключів і після ключів */
 let S=null;
 /* % платежу як у графіку «Республіки»: до ключів частка від вартості квартири, після ключів частка від суми виплат після ключів, приведена до 50%; разом 100% */
 const p2=x=>pct(x.toFixed(2).replace(/\.00$/,''))+'%';
 function list(){if(!S)return;const o=['<div class="r hd"><span>Платіж</span><i>% платежу</i><b>Сума</b></div>'];
   if(S.F)o.push('<h4>При підписанні договору</h4><div class=r><span>Внесок</span><i>'+p2(S.F/S.P*100)+'</i><b>'+mt(S.F)+'</b></div>');
-  o.push('<h4>До отримання ключів</h4><div class=r><span>'+S.n1+' платежів</span><i>'+p2(S.m1/S.P*100)+'</i><b>по '+mt(S.m1)+'</b></div>');
+  for(let i=0;i<S.n1;i++){if(i%12===0)o.push('<h4>До отримання ключів'+(S.n1>12?', '+(i/12+1)+'-й рік':'')+'</h4>');o.push('<div class=r><span>'+(i+1)+'-й місяць</span><i>'+p2(S.m1/S.P*100)+'</i><b>'+mt(S.m1)+'</b></div>')}
   for(let i=0;i<S.n2;i++){const a=S.m2*Math.pow(1+S.g,i);if(i%12===0)o.push('<h4>Після отримання ключів, '+(i/12+1)+'-й рік</h4>');o.push('<div class=r><span>'+(i+1)+'-й місяць</span><i>'+p2(a/S.A*50)+'</i><b>'+mt(a)+'</b></div>')}
   o.push('<p class=note>% платежу рахується так, як у графіку «Республіки»: яку частину всієї розстрочки становить цей платіж. Разом усі платежі дають 100%.</p>');
   $('list').innerHTML=o.join('')}
@@ -230,7 +230,9 @@ document.querySelectorAll('.seg').forEach(s=>{s.style.flexBasis='0';s.style.flex
 ids.forEach(k=>$(k).addEventListener('input',calc));
 function cur(c){CUR=c;$('cu-uah').setAttribute('aria-pressed',c==='uah');$('cu-usd').setAttribute('aria-pressed',c==='usd');$('fxw').hidden=c!=='usd';try{localStorage.setItem('rr-cur',c)}catch(e){}calc()}
 $('cu-uah').addEventListener('click',()=>cur('uah'));$('cu-usd').addEventListener('click',()=>cur('usd'));
-$('fx').value=pct(RATE);$('fx').addEventListener('input',()=>{const r=parseFloat($('fx').value.replace(',','.'));if(r>1){RATE=r;try{localStorage.setItem('rr-fx',r)}catch(e){}calc()}});
+$('fx').value=pct(RATE.toFixed(2));$('fx').addEventListener('input',()=>{const r=parseFloat($('fx').value.replace(',','.'));if(r>1){RATE=r;calc()}});
+fetch('rate.json?'+Date.now()).then(r=>r.json()).then(d=>{if(!(d.usd_sale>1))return;RATE=d.usd_sale;$('fx').value=pct(RATE.toFixed(2));
+  const [y,m,dd]=d.date.split('-');$('fxl').textContent='Курс ПриватБанку на '+dd+'.'+m+', продаж';calc()}).catch(()=>{});
 $('cu-uah').setAttribute('aria-pressed',CUR==='uah');$('cu-usd').setAttribute('aria-pressed',CUR==='usd');$('fxw').hidden=CUR!=='usd';
 $('sched').addEventListener('toggle',()=>{if($('sched').open)list()});
 /* панель зʼявляється, щойно низ великої картки зник під верхнім краєм */
