@@ -95,14 +95,6 @@ body[data-tab=s] .n4,body[data-tab=s] #more{display:none}
 .cur{display:inline-grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--tile);border-radius:12px;padding:3px}
 .cur button{min-width:64px;height:40px;border:0;border-radius:9px;background:transparent;font:inherit;font-weight:700;font-size:16px;color:var(--ink2);cursor:pointer}
 .cur button[aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.14)}
-.sched{width:100%;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums}
-.sched th{text-align:left;font-size:13px;color:var(--ink2);font-weight:600;padding:8px 4px;border-bottom:1.5px solid var(--ink)}
-.sched td{padding:8px 4px;border-bottom:1px solid var(--line)}
-.sched td:first-child{color:var(--ink2);width:2.5em}
-.sched th:last-child,.sched td:last-child{text-align:right;white-space:nowrap}
-.sched tr.h td{text-align:left;background:var(--tile);font-weight:700;color:var(--ink);font-size:14px}
-.sched tr.t td{font-weight:700;border-bottom:1.5px solid var(--ink)}
-.schedw{padding:0 12px 12px;max-height:480px;overflow:auto}
 .tune .stp{max-width:240px}
 /* уточнити */
 .todo{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
@@ -205,10 +197,6 @@ body[data-tab=s] .n4,body[data-tab=s] #more{display:none}
     </dl>
   </div>
   <p class=note id=note hidden></p>
-  <details id=sch>
-    <summary id=sch-s>Графік платежів</summary>
-    <div class=schedw><table class=sched><thead><tr><th>№</th><th>Місяць</th><th id=sch-c>Сума, ₴</th></tr></thead><tbody id=sch-b></tbody></table></div>
-  </details>
   <details id=more>
     <summary>Змінити строки, відсотки, курс</summary>
     <div class=tune>
@@ -266,10 +254,8 @@ body[data-tab=s] .n4,body[data-tab=s] #more{display:none}
 const Q={a:{n1:24,n2:36,rate:0},b:{n1:36,n2:60,rate:6}};
 const S={cur:'uah',area:50,price:50000,disc:0,fp:0,n1:24,n2:36,rate:0,usd:45.43};
 const PR={uah:{min:20000,max:150000,step:500,d:1000},usd:{min:500,max:4000,step:10,d:10}};
-const MON=['січень','лютий','березень','квітень','травень','червень','липень','серпень','вересень','жовтень','листопад','грудень'];
 const $=id=>document.getElementById(id);
 const f0=n=>Math.round(n).toLocaleString('uk-UA');
-const f2=n=>(Math.round(n*100)/100).toLocaleString('uk-UA',{minimumFractionDigits:2,maximumFractionDigits:2});
 const pct=v=>String(v).replace('.',',');
 const sym=()=>S.cur==='usd'?'$':'₴';
 const money=v=>f0(v)+' '+sym();
@@ -287,20 +273,6 @@ function plan(P,fp,n1,n2,rate){
   return{F,pre,R,m1,m2,last,g,after,mk:Math.max(0,after-R)};
 }
 function fill(el){const mn=+el.min,mx=+el.max,v=Math.min(mx,Math.max(mn,+el.value));el.style.setProperty('--p',((v-mn)/(mx-mn)*100)+'%')}
-function schedule(p,n1,n2){
-  const d=new Date(),y0=d.getFullYear(),m0=d.getMonth(),fm=v=>S.cur==='usd'?f2(v):f0(v);
-  const mon=i=>MON[(m0+i)%12]+' '+(y0+Math.floor((m0+i)/12));
-  let h='',i=0,n=0;const pre=(p.F?1:0)+n1;
-  h+='<tr class=h><td colspan=3>До ключів · '+pre+' платежів</td></tr>';
-  if(p.F){h+='<tr><td>'+(++n)+'</td><td>'+mon(i++)+', перший внесок</td><td>'+fm(p.F)+'</td></tr>'}
-  for(let k=0;k<n1;k++)h+='<tr><td>'+(++n)+'</td><td>'+mon(i++)+'</td><td>'+fm(p.m1)+'</td></tr>';
-  h+='<tr class=t><td></td><td>Разом до ключів</td><td>'+fm(p.F+p.pre)+'</td></tr>';
-  h+='<tr class=h><td colspan=3>Після ключів · '+n2+' платежів</td></tr>';
-  for(let k=0;k<n2;k++)h+='<tr><td>'+(++n)+'</td><td>'+(k+1)+'-й місяць</td><td>'+fm(p.m2*Math.pow(1+p.g,k))+'</td></tr>';
-  h+='<tr class=t><td></td><td>Разом після ключів</td><td>'+fm(p.after)+'</td></tr>';
-  h+='<tr class=t><td></td><td>Всього</td><td>'+fm(p.F+p.pre+p.after)+'</td></tr>';
-  $('sch-b').innerHTML=h;$('sch-s').textContent='Графік платежів ('+n+')';$('sch-c').textContent='Сума, '+sym();
-}
 function render(){
   const {area,price,disc,fp,n1,n2,rate}=S,pr=PR[S.cur];
   const full=area>0&&price>0?area*price:0,P=full*(1-disc/100),p=plan(P,fp,n1,n2,rate);
@@ -334,7 +306,6 @@ function render(){
   $('n1v').textContent=yrs(n1);$('n2v').textContent=yrs(n2);
   $('ratev').textContent=rate?pct(rate)+'% річних':'немає';
   $('sm1').textContent=money(p.m1);$('sm2').textContent=money(p.m2);
-  schedule(p,n1,n2);
 }
 function setQ(k){Object.assign(S,Q[k]);render()}
 function setCur(c){if(c===S.cur)return;const r=S.usd||1,pr=PR[c];
