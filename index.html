@@ -20,9 +20,11 @@ h1{font-size:26px;line-height:1.15;letter-spacing:-.02em;font-weight:800;margin:
 .card+.card{margin-top:12px}
 .cap{font-size:14px;font-weight:600;color:var(--ink3);margin:0 0 12px}
 .top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:0 4px 16px}
-.cur{display:inline-flex;background:#E5E5EA;border-radius:12px;padding:3px;gap:2px}
+.cur{position:relative;display:inline-flex;background:#E5E5EA;border-radius:12px;padding:3px;gap:2px}
+.cur .th{position:absolute;top:3px;bottom:3px;left:0;border-radius:9px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.04);transition:transform 320ms cubic-bezier(.32,.72,0,1),width 320ms cubic-bezier(.32,.72,0,1)}
+.cur button{position:relative;z-index:1}
 .cur button{border:0;background:transparent;font:600 15px/1 Onest,-apple-system,sans-serif;padding:0 18px;min-height:40px;border-radius:9px;color:var(--ink2);cursor:pointer;transition:background-color 150ms ease-out,color 150ms ease-out,box-shadow 150ms ease-out}
-.cur button[aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.cur button[aria-pressed=true]{color:var(--ink)}
 .cur button:active{transform:scale(.97)}.cur button:focus-visible{outline:3px solid rgba(30,158,90,.4);outline-offset:1px}
 .fxw{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--ink2)}
 .fxw input{width:80px;font:600 16px Onest,-apple-system,sans-serif;padding:9px 10px;border:1px solid #D1D1D6;border-radius:10px;background:#fff;color:var(--ink);font-variant-numeric:tabular-nums}
@@ -116,11 +118,25 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 .mini.two{grid-template-columns:repeat(2,1fr)}
 @media (min-width:900px){.mini{display:none}}
 @media (max-width:360px){.mini .n{font-size:17px}.mini>div{padding:0 6px}}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* рух: поява карток, перехід валюти, натискання */
+@keyframes rise{from{opacity:0;transform:translateY(12px)}}
+.rise{animation:rise 520ms cubic-bezier(.23,1,.32,1) both}
+.fxw:not([hidden]){animation:rise 260ms cubic-bezier(.23,1,.32,1) both}
+.swap .num,.swap .list b,.swap .sl .v{filter:blur(3px);opacity:.5}
+.num,.list b,.sl .v{transition:filter 180ms ease-out,opacity 180ms ease-out}
+.sched summary{transition:background-color 150ms ease-out,transform 160ms ease-out}
+.sched summary:active{transform:scale(.985)}
+.sched.closing summary::after{transform:rotate(45deg) translateY(-2px)}
+.list .r{animation:none}
+.t{transition:transform 220ms cubic-bezier(.23,1,.32,1),box-shadow 220ms ease-out}
+@media (hover:hover){.sched summary:hover{background:#E9E9EE}.sec .t:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.08)}}
+input[type=range]::-webkit-slider-thumb{transition:transform 160ms cubic-bezier(.34,1.56,.64,1),box-shadow 160ms ease-out}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.12)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style></head><body><main>
 
 <h1>Калькулятор розстрочки за моделлю ЖК «Республіка»</h1>
-<div class=top><div class=cur role=group aria-label="Валюта"><button type=button id=cu-uah aria-pressed=true>У гривнях</button><button type=button id=cu-usd aria-pressed=false>У доларах</button></div><label class=fxw id=fxw hidden><span id=fxl>Курс ПриватБанку, продаж</span> <input id=fx type=text inputmode=decimal autocomplete=off aria-label="Курс долара в гривнях"> ₴ за 1 $</label></div>
+<div class=top><div class=cur role=group aria-label="Валюта"><span class=th aria-hidden=true></span><button type=button id=cu-uah aria-pressed=true>У гривнях</button><button type=button id=cu-usd aria-pressed=false>У доларах</button></div><label class=fxw id=fxw hidden><span id=fxl>Курс ПриватБанку, продаж</span> <input id=fx type=text inputmode=decimal autocomplete=off aria-label="Курс долара в гривнях"> ₴ за 1 $</label></div>
 
 <div class=lay>
   <div>
@@ -195,25 +211,31 @@ function list(){if(!S)return;const o=['<div class="r hd"><span>Платіж</spa
   for(let i=0;i<S.n2;i++){const a=S.m2*Math.pow(1+S.g,i);if(i%12===0)o.push('<h4>Після отримання ключів, '+(i/12+1)+'-й рік</h4>');o.push('<div class=r><span>'+(i+1)+'-й місяць</span><i>'+p2(a/S.A*50)+'</i><b>'+mt(a)+'</b></div>')}
   o.push('<p class=note>% платежу рахується так, як у графіку «Республіки»: яку частину всієї розстрочки становить цей платіж. Разом усі платежі дають 100%.</p>');
   $('list').innerHTML=o.join('')}
+/* числа не стрибають, а плавно доїжджають до нового значення; рух перехоплюється з поточного місця */
+const RM=matchMedia('(prefers-reduced-motion: reduce)');
+function num(id,v,f,zero){const el=$(id);if(el===DUMMY)return;if(zero&&!(v>0.5)){el._v=0;el.textContent=zero;return}
+  const from=el._v==null?0:el._v;el._v=v;cancelAnimationFrame(el._r);
+  if(RM.matches||from===v||el._f!==f&&el._f){el._f=f;el.innerHTML=f(v);return}el._f=f;
+  const t0=performance.now(),D=from?300:700;const step=t=>{const k=Math.min(1,(t-t0)/D),e=1-Math.pow(1-k,3);el.innerHTML=f(from+(v-from)*e);if(k<1)el._r=requestAnimationFrame(step)};el._r=requestAnimationFrame(step)}
 function calc(){
   const v={};ids.forEach(k=>{const el=$(k);v[k]=+el.value;fill(el);const t=LBL[k](v[k]);$(k+'-v').textContent=t;el.setAttribute('aria-valuetext',t)});
   const P=v.area*v.price,F=P*v.fp/100,K=P/2,pre=K-F,R=P-K,n2=v.n2*12,g=grow(v.rate);
   const m1=pre/v.n1,m2=R/n2,last=m2*Math.pow(1+g,n2-1),after=g?m2*(Math.pow(1+g,n2)-1)/g:R,mk=after-R;
-  $('o-m1').innerHTML=mb(m1);
+  num('o-m1',m1,mb);
   $('o-m1s').textContent=v.n1+' однакових щомісячних платежів';
-  $('o-m2').innerHTML=mb(m2);
+  num('o-m2',m2,mb);
   $('o-m2a').textContent=g?'':n2+' однакових щомісячних платежів';$('o-m2a').hidden=!!g;$('o-m2l').textContent=(g?'Перший платіж':'Щомісяця')+' після отримання ключів';
-  $('lastw').hidden=!g;$('o-m2s').innerHTML=mb(last);
+  $('lastw').hidden=!g;num('o-m2s',last,mb);
   S={F,m1,n1:v.n1,m2,g,n2,P,A:after};if($('sched').open)list();
   const T=v.n1+n2;$('tot').textContent=term(T);$('tots').textContent=v.n1+' міс до отримання ключів і '+ym(n2)+' після';
   $('rate-h').textContent=g?'Діє лише після отримання ключів: кожен платіж на '+pct((g*100).toFixed(2))+'% більший за попередній':'Без здорожчання: усі платежі після отримання ключів однакові';
-  $('mn1').innerHTML=mb(m1);$('mn2').innerHTML=mb(m2);$('mn3').innerHTML=mb(last);
+  num('mn1',m1,mb);num('mn2',m2,mb);num('mn3',last,mb);
   $('mc3').hidden=!g;$('mini').classList.toggle('two',!g);$('ml2').innerHTML=(g?'Перший платіж':'Щомісяця')+' після&nbsp;ключів';
-  $('o-p').textContent=mt(P);
-  $('o-f').textContent=F?mt(F):'немає';
-  $('o-mk').textContent=mk>0.5?mt(mk):'немає';
+  num('o-p',P,mt);
+  num('o-f',F,mt,'немає');
+  num('o-mk',mk,mt,'немає');
   $('o-mks').textContent=mk>0.5?pct((mk/P*100).toFixed(1))+'% вартості квартири':'';
-  $('o-t').textContent=mt(P+mk);
+  num('o-t',P+mk,mt);
   $('sm1').textContent=mt(m1);$('sm2').textContent=mt(m2);
   /* схема */
   $('s1').hidden=!v.fp;$('s1b').textContent=v.fp+'%';$('s2b').textContent=(50-v.fp)+'%';
@@ -228,18 +250,28 @@ function calc(){
 }
 document.querySelectorAll('.seg').forEach(s=>{s.style.flexBasis='0';s.style.flexShrink='1'});
 ids.forEach(k=>$(k).addEventListener('input',calc));
-function cur(c){CUR=c;$('cu-uah').setAttribute('aria-pressed',c==='uah');$('cu-usd').setAttribute('aria-pressed',c==='usd');$('fxw').hidden=c!=='usd';try{localStorage.setItem('rr-cur',c)}catch(e){}calc()}
+function thumb(){const b=$(CUR==='usd'?'cu-usd':'cu-uah'),t=document.querySelector('.cur .th');if(!t)return;t.style.width=b.offsetWidth+'px';t.style.transform='translateX('+b.offsetLeft+'px)'}
+function cur(c){if(c===CUR)return;CUR=c;$('cu-uah').setAttribute('aria-pressed',c==='uah');$('cu-usd').setAttribute('aria-pressed',c==='usd');$('fxw').hidden=c!=='usd';thumb();try{localStorage.setItem('rr-cur',c)}catch(e){}
+  if(RM.matches){calc();return}const m=document.querySelector('main');m.classList.add('swap');setTimeout(()=>{calc();if($('sched').open)list();m.classList.remove('swap')},170)}
 $('cu-uah').addEventListener('click',()=>cur('uah'));$('cu-usd').addEventListener('click',()=>cur('usd'));
 $('fx').value=pct(RATE.toFixed(2));$('fx').addEventListener('input',()=>{const r=parseFloat($('fx').value.replace(',','.'));if(r>1){RATE=r;calc()}});
 fetch('rate.json?'+Date.now()).then(r=>r.json()).then(d=>{if(!(d.usd_sale>1))return;RATE=d.usd_sale;$('fx').value=pct(RATE.toFixed(2));
   const [y,m,dd]=d.date.split('-');$('fxl').textContent='Курс ПриватБанку на '+dd+'.'+m+', продаж';calc()}).catch(()=>{});
 $('cu-uah').setAttribute('aria-pressed',CUR==='uah');$('cu-usd').setAttribute('aria-pressed',CUR==='usd');$('fxw').hidden=CUR!=='usd';
 $('sched').addEventListener('toggle',()=>{if($('sched').open)list()});
+/* список розкривається і згортається по висоті, а не стрибком */
+document.querySelector('#sched summary').addEventListener('click',e=>{const d=$('sched'),L=$('list');if(RM.matches)return;e.preventDefault();
+  if(d._a)d._a.cancel();
+  if(!d.open){list();d.open=true;const h=L.offsetHeight;d._a=L.animate([{height:'0px',opacity:0},{height:h+'px',opacity:1}],{duration:360,easing:'cubic-bezier(.32,.72,0,1)'});d._a.onfinish=()=>d._a=null}
+  else{const h=L.offsetHeight;d.classList.add('closing');d._a=L.animate([{height:h+'px',opacity:1},{height:'0px',opacity:0}],{duration:240,easing:'cubic-bezier(.23,1,.32,1)'});d._a.onfinish=()=>{d.open=false;d.classList.remove('closing');d._a=null}}});
 /* панель зʼявляється, щойно низ великої картки зник під верхнім краєм */
 new IntersectionObserver(([e])=>{$('mini').classList.toggle('on',!e.isIntersecting&&e.boundingClientRect.top<0)},{rootMargin:'-24px 0px 0px 0px'}).observe(document.querySelector('.hero'));
 addEventListener('resize',place);$('s3').addEventListener('transitionend',place);
 const segs=document.querySelectorAll('.seg');segs.forEach(x=>x.style.transition='none');
 calc();
 requestAnimationFrame(()=>requestAnimationFrame(()=>segs.forEach(x=>x.style.transition='')));
+thumb();document.fonts&&document.fonts.ready.then(()=>{const t=document.querySelector('.cur .th');t.style.transition='none';thumb();requestAnimationFrame(()=>t.style.transition='')});addEventListener('resize',thumb);
+/* картки зʼявляються по черзі, один раз при відкритті */
+if(!RM.matches)document.querySelectorAll('h1,.top,.card,.sec .t').forEach((el,i)=>{el.style.animationDelay=(i*55)+'ms';el.classList.add('rise')});
 </script>
 </body></html>
