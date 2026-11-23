@@ -19,6 +19,14 @@ h1{font-size:26px;line-height:1.15;letter-spacing:-.02em;font-weight:800;margin:
 .card{background:var(--card);border-radius:22px;padding:18px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
 .card+.card{margin-top:12px}
 .cap{font-size:14px;font-weight:600;color:var(--ink3);margin:0 0 12px}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:0 4px 16px}
+.cur{display:inline-flex;background:#E5E5EA;border-radius:12px;padding:3px;gap:2px}
+.cur button{border:0;background:transparent;font:600 15px/1 Onest,-apple-system,sans-serif;padding:0 18px;min-height:40px;border-radius:9px;color:var(--ink2);cursor:pointer;transition:background-color 150ms ease-out,color 150ms ease-out,box-shadow 150ms ease-out}
+.cur button[aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.cur button:active{transform:scale(.97)}.cur button:focus-visible{outline:3px solid rgba(30,158,90,.4);outline-offset:1px}
+.fxw{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--ink2)}
+.fxw input{width:80px;font:600 16px Onest,-apple-system,sans-serif;padding:9px 10px;border:1px solid #D1D1D6;border-radius:10px;background:#fff;color:var(--ink);font-variant-numeric:tabular-nums}
+.fxw input:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(30,158,90,.2)}
 /* головне */
 .hero{display:grid;grid-template-columns:1fr;gap:16px;box-shadow:0 8px 24px rgba(0,0,0,.06)}
 .hero .l{font-size:14px;color:var(--ink2);font-weight:500}
@@ -112,6 +120,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 </style></head><body><main>
 
 <h1>Калькулятор розстрочки за моделлю ЖК «Республіка»</h1>
+<div class=top><div class=cur role=group aria-label="Валюта"><button type=button id=cu-uah aria-pressed=true>У гривнях</button><button type=button id=cu-usd aria-pressed=false>У доларах</button></div><label class=fxw id=fxw hidden>Курс ПриватБанку, продаж <input id=fx type=text inputmode=decimal autocomplete=off aria-label="Курс долара в гривнях"> ₴ за 1 $</label></div>
 
 <div class=lay>
   <div>
@@ -158,10 +167,16 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 const DUMMY=document.createElement('div');DUMMY.style.setProperty=()=>{};const $=id=>document.getElementById(id)||DUMMY;
 const f0=n=>Math.round(n).toLocaleString('uk-UA');
 const pct=v=>String(v).replace('.',',');
+/* валюта: усе рахується в гривнях, у доларах лише показується за курсом, який вводить менеджер */
+let CUR='uah',RATE=45.45;
+try{CUR=localStorage.getItem('rr-cur')||CUR;RATE=+localStorage.getItem('rr-fx')||RATE}catch(e){}
+const cv=x=>CUR==='usd'?x/RATE:x,sym=()=>CUR==='usd'?'$':'₴';
+const mt=x=>f0(cv(x))+' '+sym(),mb=x=>f0(cv(x))+'<small>'+sym()+'</small>';
+
 const yr=y=>y+' '+(y===1?'рік':(y>=2&&y<=4?'роки':'років'));
 /* як у графіку «Республіки» від 19.11.2026: після ключів залишок ділиться на рівні частини, і платіж щомісяця росте; 6% річних = +0,48% на місяць */
 const grow=r=>r?Math.floor((Math.pow(1+r/100,1/12)-1)*1e4)/1e4:0;
-const LBL={area:v=>pct(v)+' м²',price:v=>f0(v)+' ₴',fp:v=>v+'%',n1:v=>String(v),n2:v=>ym(Math.round(v*12)),rate:v=>pct(v)};
+const LBL={area:v=>pct(v)+' м²',price:v=>mt(v),fp:v=>v+'%',n1:v=>String(v),n2:v=>ym(Math.round(v*12)),rate:v=>pct(v)};
 const ids=Object.keys(LBL);
 function fill(el){el.style.setProperty('--p',((el.value-el.min)/(el.max-el.min)*100)+'%')}
 function place(){if(!document.getElementById('kd'))return;const s3=$('s3'),bar=s3.parentNode,x=s3.offsetLeft-bar.offsetLeft-2,W=bar.offsetWidth,w=$('kl').offsetWidth/2;
@@ -175,31 +190,31 @@ let S=null;
 /* % платежу як у графіку «Республіки»: до ключів частка від вартості квартири, після ключів частка від суми виплат після ключів, приведена до 50%; разом 100% */
 const p2=x=>pct(x.toFixed(2).replace(/\.00$/,''))+'%';
 function list(){if(!S)return;const o=['<div class="r hd"><span>Платіж</span><i>% платежу</i><b>Сума</b></div>'];
-  if(S.F)o.push('<h4>При підписанні договору</h4><div class=r><span>Внесок</span><i>'+p2(S.F/S.P*100)+'</i><b>'+f0(S.F)+' ₴</b></div>');
-  o.push('<h4>До отримання ключів</h4><div class=r><span>'+S.n1+' платежів</span><i>'+p2(S.m1/S.P*100)+'</i><b>по '+f0(S.m1)+' ₴</b></div>');
-  for(let i=0;i<S.n2;i++){const a=S.m2*Math.pow(1+S.g,i);if(i%12===0)o.push('<h4>Після отримання ключів, '+(i/12+1)+'-й рік</h4>');o.push('<div class=r><span>'+(i+1)+'-й місяць</span><i>'+p2(a/S.A*50)+'</i><b>'+f0(a)+' ₴</b></div>')}
+  if(S.F)o.push('<h4>При підписанні договору</h4><div class=r><span>Внесок</span><i>'+p2(S.F/S.P*100)+'</i><b>'+mt(S.F)+'</b></div>');
+  o.push('<h4>До отримання ключів</h4><div class=r><span>'+S.n1+' платежів</span><i>'+p2(S.m1/S.P*100)+'</i><b>по '+mt(S.m1)+'</b></div>');
+  for(let i=0;i<S.n2;i++){const a=S.m2*Math.pow(1+S.g,i);if(i%12===0)o.push('<h4>Після отримання ключів, '+(i/12+1)+'-й рік</h4>');o.push('<div class=r><span>'+(i+1)+'-й місяць</span><i>'+p2(a/S.A*50)+'</i><b>'+mt(a)+'</b></div>')}
   o.push('<p class=note>% платежу рахується так, як у графіку «Республіки»: яку частину всієї розстрочки становить цей платіж. Разом усі платежі дають 100%.</p>');
   $('list').innerHTML=o.join('')}
 function calc(){
   const v={};ids.forEach(k=>{const el=$(k);v[k]=+el.value;fill(el);const t=LBL[k](v[k]);$(k+'-v').textContent=t;el.setAttribute('aria-valuetext',t)});
   const P=v.area*v.price,F=P*v.fp/100,K=P/2,pre=K-F,R=P-K,n2=v.n2*12,g=grow(v.rate);
   const m1=pre/v.n1,m2=R/n2,last=m2*Math.pow(1+g,n2-1),after=g?m2*(Math.pow(1+g,n2)-1)/g:R,mk=after-R;
-  $('o-m1').innerHTML=f0(m1)+'<small>₴</small>';
+  $('o-m1').innerHTML=mb(m1);
   $('o-m1s').textContent=v.n1+' однакових щомісячних платежів';
-  $('o-m2').innerHTML=f0(m2)+'<small>₴</small>';
+  $('o-m2').innerHTML=mb(m2);
   $('o-m2a').textContent=g?'':n2+' однакових щомісячних платежів';$('o-m2a').hidden=!!g;$('o-m2l').textContent=(g?'Перший платіж':'Щомісяця')+' після отримання ключів';
-  $('lastw').hidden=!g;$('o-m2s').innerHTML=f0(last)+'<small>₴</small>';
+  $('lastw').hidden=!g;$('o-m2s').innerHTML=mb(last);
   S={F,m1,n1:v.n1,m2,g,n2,P,A:after};if($('sched').open)list();
   const T=v.n1+n2;$('tot').textContent=term(T);$('tots').textContent=v.n1+' міс до отримання ключів і '+ym(n2)+' після';
   $('rate-h').textContent=g?'Діє лише після отримання ключів: кожен платіж на '+pct((g*100).toFixed(2))+'% більший за попередній':'Без здорожчання: усі платежі після отримання ключів однакові';
-  $('mn1').innerHTML=f0(m1)+'<small>₴</small>';$('mn2').innerHTML=f0(m2)+'<small>₴</small>';$('mn3').innerHTML=f0(last)+'<small>₴</small>';
+  $('mn1').innerHTML=mb(m1);$('mn2').innerHTML=mb(m2);$('mn3').innerHTML=mb(last);
   $('mc3').hidden=!g;$('mini').classList.toggle('two',!g);$('ml2').innerHTML=(g?'Перший платіж':'Щомісяця')+' після&nbsp;ключів';
-  $('o-p').textContent=f0(P)+' ₴';
-  $('o-f').textContent=F?f0(F)+' ₴':'немає';
-  $('o-mk').textContent=mk>0.5?f0(mk)+' ₴':'немає';
+  $('o-p').textContent=mt(P);
+  $('o-f').textContent=F?mt(F):'немає';
+  $('o-mk').textContent=mk>0.5?mt(mk):'немає';
   $('o-mks').textContent=mk>0.5?pct((mk/P*100).toFixed(1))+'% вартості квартири':'';
-  $('o-t').textContent=f0(P+mk)+' ₴';
-  $('sm1').textContent=f0(m1)+' ₴';$('sm2').textContent=f0(m2)+' ₴';
+  $('o-t').textContent=mt(P+mk);
+  $('sm1').textContent=mt(m1);$('sm2').textContent=mt(m2);
   /* схема */
   $('s1').hidden=!v.fp;$('s1b').textContent=v.fp+'%';$('s2b').textContent=(50-v.fp)+'%';
   $('s1').style.flexGrow=v.fp;$('s2').style.flexGrow=50-v.fp;$('s3').style.flexGrow=50;
@@ -213,6 +228,10 @@ function calc(){
 }
 document.querySelectorAll('.seg').forEach(s=>{s.style.flexBasis='0';s.style.flexShrink='1'});
 ids.forEach(k=>$(k).addEventListener('input',calc));
+function cur(c){CUR=c;$('cu-uah').setAttribute('aria-pressed',c==='uah');$('cu-usd').setAttribute('aria-pressed',c==='usd');$('fxw').hidden=c!=='usd';try{localStorage.setItem('rr-cur',c)}catch(e){}calc()}
+$('cu-uah').addEventListener('click',()=>cur('uah'));$('cu-usd').addEventListener('click',()=>cur('usd'));
+$('fx').value=pct(RATE);$('fx').addEventListener('input',()=>{const r=parseFloat($('fx').value.replace(',','.'));if(r>1){RATE=r;try{localStorage.setItem('rr-fx',r)}catch(e){}calc()}});
+$('cu-uah').setAttribute('aria-pressed',CUR==='uah');$('cu-usd').setAttribute('aria-pressed',CUR==='usd');$('fxw').hidden=CUR!=='usd';
 $('sched').addEventListener('toggle',()=>{if($('sched').open)list()});
 /* панель зʼявляється, щойно низ великої картки зник під верхнім краєм */
 new IntersectionObserver(([e])=>{$('mini').classList.toggle('on',!e.isIntersecting&&e.boundingClientRect.top<0)},{rootMargin:'-24px 0px 0px 0px'}).observe(document.querySelector('.hero'));
