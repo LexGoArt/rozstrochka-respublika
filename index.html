@@ -78,6 +78,11 @@ h1{font-size:26px;line-height:1.15;letter-spacing:-.02em;font-weight:800;margin:
 .sl label{font-size:16px;color:var(--ink2)}
 .sl .v{font-size:20px;font-weight:700}
 .sl input{grid-column:1/-1}
+.sl input.v{grid-column:auto;justify-self:end;font:inherit;font-size:20px;font-weight:700;color:var(--ink);text-align:right;background:var(--bg);border:0;border-radius:10px;padding:4px 10px;margin:0 -4px 0 0;min-height:36px;field-sizing:content;min-width:56px;max-width:180px;-webkit-appearance:none;appearance:none;cursor:text;transition:background-color 150ms ease-out,box-shadow 200ms ease-out,transform 260ms var(--spring),color 160ms ease-out,filter 180ms ease-out,opacity 180ms ease-out}
+@supports not (field-sizing:content){.sl input.v{width:150px}}
+@media (hover:hover){.sl input.v:hover{background:#E9E9EE}}
+.sl input.v:focus{outline:none;background:#fff;box-shadow:0 0 0 2px var(--g),0 4px 14px rgba(30,158,90,.18);color:var(--ink)}
+.sl input.v:focus{transform:none}
 .sl .hint{grid-column:1/-1;font-size:14px;color:var(--ink3);margin-top:2px}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:40px;margin:0;background:transparent;cursor:pointer;--p:50%}
 input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:4px;background:linear-gradient(to right,var(--g) var(--p),var(--hair) var(--p))}
@@ -182,12 +187,12 @@ input[type=range]:active::-webkit-slider-thumb{transform:scale(1.12)}
       <div class=tll aria-hidden=true><span class=a>Договір<small>сьогодні</small></span><span class=b id=kl>Ключі<small id=kls></small></span><span class=c>Завершення<br>виплат<small id=kcs></small></span></div>
     </section>
     <section class=card aria-label="Розрахунок">
-      <div class=sl><label for=area>Площа</label><span class="v num" id=area-v></span><input id=area type=range min=20 max=150 step=0.5 value=70></div>
-      <div class=sl><label for=price>Ціна за м²</label><span class="v num" id=price-v></span><input id=price type=range min=20000 max=120000 step=500 value=54000></div>
-      <div class=sl><label for=fp>Перший внесок</label><span class="v num" id=fp-v></span><input id=fp type=range min=0 max=50 step=1 value=10></div>
-      <div class=sl><label for=n1>До отримання ключів, міс.</label><span class="v num" id=n1-v></span><input id=n1 type=range min=3 max=48 step=1 value=12></div>
-      <div class=sl><label for=n2>Строк розстрочки після отримання ключів</label><span class="v num" id=n2-v></span><input id=n2 type=range min=0.5 max=10 step=0.5 value=5></div>
-      <div class=sl><label for=rate>Річне здорожчання, %</label><span class="v num" id=rate-v></span><small class=hint id=rate-h></small><input id=rate type=range min=0 max=12 step=0.5 value=6></div>
+      <div class=sl><label for=area>Площа</label><input class="v num" id=area-v type=text inputmode=decimal autocomplete=off enterkeyhint=done aria-label="Площа, м², ввести вручну"><input id=area type=range min=20 max=150 step=0.5 value=70></div>
+      <div class=sl><label for=price>Ціна за м²</label><input class="v num" id=price-v type=text inputmode=decimal autocomplete=off enterkeyhint=done aria-label="Ціна за м², ввести вручну"><input id=price type=range min=20000 max=120000 step=500 value=54000></div>
+      <div class=sl><label for=fp>Перший внесок</label><input class="v num" id=fp-v type=text inputmode=decimal autocomplete=off enterkeyhint=done aria-label="Перший внесок, %, ввести вручну"><input id=fp type=range min=0 max=50 step=1 value=10></div>
+      <div class=sl><label for=n1>До отримання ключів, міс.</label><input class="v num" id=n1-v type=text inputmode=decimal autocomplete=off enterkeyhint=done aria-label="Місяців до отримання ключів, ввести вручну"><input id=n1 type=range min=3 max=48 step=1 value=12></div>
+      <div class=sl><label for=n2>Строк розстрочки після отримання ключів</label><input class="v num" id=n2-v type=text inputmode=decimal autocomplete=off enterkeyhint=done aria-label="Років розстрочки після отримання ключів, ввести вручну"><input id=n2 type=range min=0.5 max=10 step=0.5 value=5></div>
+      <div class=sl><label for=rate>Річне здорожчання, %</label><input class="v num" id=rate-v type=text inputmode=decimal autocomplete=off enterkeyhint=done aria-label="Річне здорожчання, %, ввести вручну"><small class=hint id=rate-h></small><input id=rate type=range min=0 max=12 step=0.5 value=6></div>
     </section>
   </div>
   <aside class=side aria-live=polite>
@@ -222,8 +227,15 @@ const mt=x=>f0(cv(x))+' '+sym(),mb=x=>f0(cv(x))+'<small>'+sym()+'</small>';
 const yr=y=>y+' '+(y===1?'рік':(y>=2&&y<=4?'роки':'років'));
 /* як у графіку «Республіки» від 19.11.2026: після ключів залишок ділиться на рівні частини, і платіж щомісяця росте; 6% річних = +0,48% на місяць */
 const grow=r=>r?Math.floor((Math.pow(1+r/100,1/12)-1)*1e4)/1e4:0;
-const LBL={area:v=>pct(v)+' м²',price:v=>mt(v),fp:v=>v+'%',n1:v=>String(v),n2:v=>ym(Math.round(v*12)),rate:v=>pct(v)};
+const LBL={area:v=>pct(v)+' м²',price:v=>mt(v),fp:v=>pct(+v.toFixed(2))+'%',n1:v=>String(v),n2:v=>ym(Math.round(v*12)),rate:v=>pct(v)};
 const ids=Object.keys(LBL);
+/* ручне введення: число з поля важливіше за повзунок, поки повзунок не зрушили */
+const M={};
+const LIM={area:[1,10000],price:[1,1e7],fp:[0,50],n1:[1,120],n2:[1/12,30],rate:[0,30]};
+const RAW={area:v=>pct(+v.toFixed(2)),price:v=>String(Math.round(cv(v))),fp:v=>pct(+v.toFixed(2)),n1:v=>String(v),n2:v=>pct(+v.toFixed(2)),rate:v=>pct(+v.toFixed(2))};
+function parse(k,t){let x=parseFloat(String(t).replace(/[\s\u00a0]/g,'').replace(',','.'));if(!isFinite(x))return null;
+  if(k==='price'&&CUR==='usd')x*=RATE;if(k==='n1')x=Math.round(x);if(k==='n2')x=Math.round(x*12)/12;
+  return Math.min(LIM[k][1],Math.max(LIM[k][0],x))}
 function fill(el){el.style.setProperty('--p',((el.value-el.min)/(el.max-el.min)*100)+'%')}
 function place(){if(!document.getElementById('kd'))return;const s3=$('s3'),bar=s3.parentNode,x=s3.offsetLeft-bar.offsetLeft-2,W=bar.offsetWidth,w=$('kl').offsetWidth/2;
   $('kd').style.left=x+'px';$('kl').style.left=Math.min(Math.max(x,w+72),W-w-72)+'px'}
@@ -255,8 +267,8 @@ function txt(id,t){const el=$(id);if(el===DUMMY||el.textContent===t)return;const
   if(!had||RM.matches||!booted)return;el.classList.remove('slot');void el.offsetWidth;el.classList.add('slot')}
 let booted=false;
 function calc(){
-  const v={};ids.forEach(k=>{const el=$(k);v[k]=+el.value;fill(el);const t=LBL[k](v[k]);$(k+'-v').textContent=t;el.setAttribute('aria-valuetext',t)});
-  const P=v.area*v.price,F=P*v.fp/100,K=P/2,pre=K-F,R=P-K,n2=v.n2*12,g=grow(v.rate);
+  const v={};ids.forEach(k=>{const el=$(k);v[k]=k in M?M[k]:+el.value;fill(el);const t=LBL[k](v[k]),f=$(k+'-v');if(document.activeElement!==f)f.value=t;el.setAttribute('aria-valuetext',t)});
+  const P=v.area*v.price,F=P*v.fp/100,K=P/2,pre=K-F,R=P-K,n2=Math.round(v.n2*12),g=grow(v.rate);
   const m1=pre/v.n1,m2=R/n2,last=m2*Math.pow(1+g,n2-1),after=g?m2*(Math.pow(1+g,n2)-1)/g:R,mk=after-R;
   num('o-m1',m1,mb);
   $('o-m1s').textContent=v.n1+' однакових щомісячних платежів';
@@ -275,7 +287,7 @@ function calc(){
   num('o-t',P+mk,mt);
   $('sm1').textContent=mt(m1);$('sm2').textContent=mt(m2);
   /* схема */
-  $('s1').hidden=!v.fp;$('s1b').textContent=v.fp+'%';$('s2b').textContent=(50-v.fp)+'%';
+  $('s1').hidden=!v.fp;$('s1b').textContent=pct(+v.fp.toFixed(2))+'%';$('s2b').textContent=pct(+(50-v.fp).toFixed(2))+'%';
   $('s1').style.flexGrow=v.fp;$('s2').style.flexGrow=50-v.fp;$('s3').style.flexGrow=50;
   $('s2').hidden=v.fp>=50;
   $('s3s').innerHTML=v.rate?'Після отримання ключів':'Після отримання ключів<br>без здорожчання';
@@ -286,7 +298,14 @@ function calc(){
   requestAnimationFrame(place);
 }
 document.querySelectorAll('.seg').forEach(s=>{s.style.flexBasis='0';s.style.flexShrink='1'});
-ids.forEach(k=>$(k).addEventListener('input',calc));
+ids.forEach(k=>{$(k).addEventListener('input',()=>{delete M[k];calc()});
+  const f=$(k+'-v');
+  let fresh=false;
+  f.addEventListener('focus',()=>{f.value=RAW[k](k in M?M[k]:+$(k).value);fresh=true;f.setSelectionRange(0,f.value.length);setTimeout(()=>f.setSelectionRange(0,f.value.length),0)});
+  f.addEventListener('mouseup',e=>{if(fresh){e.preventDefault();fresh=false}});f.addEventListener('pointerup',()=>setTimeout(()=>{if(fresh)f.setSelectionRange(0,f.value.length);fresh=false},0));
+  f.addEventListener('input',()=>{const x=parse(k,f.value);if(x==null)return;M[k]=x;$(k).value=x;calc()});
+  f.addEventListener('keydown',e=>{if(e.key==='Enter')f.blur();if(e.key==='Escape'){f.blur()}});
+  f.addEventListener('blur',()=>{f.value=LBL[k](k in M?M[k]:+$(k).value)})});
 function thumb(){const b=$(CUR==='usd'?'cu-usd':'cu-uah'),t=document.querySelector('.cur .th');if(!t)return;t.style.width=b.offsetWidth+'px';t.style.transform='translateX('+b.offsetLeft+'px)'}
 function cur(c){if(c===CUR)return;CUR=c;$('cu-uah').setAttribute('aria-pressed',c==='uah');$('cu-usd').setAttribute('aria-pressed',c==='usd');$('fxw').hidden=c!=='usd';thumb();try{localStorage.setItem('rr-cur',c)}catch(e){}
   if(RM.matches){calc();return}const m=document.querySelector('main');m.classList.add('swap');setTimeout(()=>{calc();if($('sched').open)list();m.classList.remove('swap')},170)}
