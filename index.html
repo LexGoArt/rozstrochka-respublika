@@ -26,9 +26,9 @@ h1{font-size:26px;line-height:1.15;letter-spacing:-.02em;font-weight:800;margin:
 .hero .n small{font-size:17px;font-weight:600;margin-left:3px;color:var(--ink2)}
 .hero .s{font-size:14px;color:var(--ink2);margin-top:4px}
 .hero>div+div{border-left:1px solid var(--hair);padding-left:12px}
-.ramp{display:block;width:100%;height:22px;margin-top:10px;overflow:visible}
-.ramp polygon{fill:var(--r-bg)}.ramp polyline{fill:none;stroke:var(--r);stroke-width:2.5;stroke-linecap:round;vector-effect:non-scaling-stroke}
-.ramp.free polygon{fill:var(--g-bg)}.ramp.free polyline{stroke:var(--g)}
+.yrs{display:flex;align-items:flex-end;gap:4px;height:32px;margin-top:10px}
+.yrs i{flex:1;border-radius:5px;background:var(--r);transition:height 220ms var(--ease),opacity 220ms var(--ease)}
+.yrs.free i{background:var(--g);opacity:.35!important}
 /* схема-капсула */
 .bar{display:flex;gap:3px;border-radius:14px;overflow:hidden}
 .seg{min-width:0;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;min-height:58px;transition:flex-grow 220ms var(--ease)}
@@ -110,7 +110,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
   <aside class=side aria-live=polite>
     <div class="card hero">
       <div><div class=l>Щомісяця<br>до ключів</div><div class="n num" id=o-m1></div><div class=s id=o-m1s></div></div>
-      <div><div class=l>Щомісяця<br>після ключів</div><div class="n num" id=o-m2></div><svg class=ramp id=ramp viewBox="0 0 100 22" preserveAspectRatio=none aria-hidden=true><polygon id=rp points="0,22 100,22 100,2 0,2"/><polyline id=rl points="0,2 100,2"/></svg><div class=s id=o-m2s></div></div>
+      <div><div class=l>Щомісяця<br>після ключів</div><div class="n num" id=o-m2></div><div class=yrs id=yrs aria-hidden=true><i></i><i></i><i></i><i></i><i></i></div><div class=s id=o-m2s></div></div>
     </div>
     <div class=sec>
       <div class=t><div class=l>Ціна квартири</div><div class="n num" id=o-p></div></div>
@@ -142,7 +142,9 @@ function calc(){
   $('o-m1s').textContent=v.n1+' міс, рівно';
   $('o-m2').innerHTML=f0(m2)+'<small>₴</small>';
   $('o-m2s').innerHTML=g?'щомісяця +'+pct((g*100).toFixed(2))+'%<br>останній '+f0(last)+' ₴':yr(v.n2)+', рівно';
-  const y0=(2+20*(1-m2/last)).toFixed(2);$('rp').setAttribute('points','0,22 100,22 100,2 0,'+y0);$('rl').setAttribute('points','0,'+y0+' 100,2');$('ramp').classList.toggle('free',!g);
+  /* стовпчик на кожен рік після ключів: сходинки показують, що платіж росте (точні суми в підписі) */
+  const yb=document.querySelectorAll('#yrs i'),Y=v.n2;$('yrs').classList.toggle('free',!g);
+  yb.forEach((b,k)=>{b.hidden=k>=Y;b.style.height=(g&&Y>1?44+56*k/(Y-1):60)+'%';b.style.opacity=Y>1?(.28+.72*k/(Y-1)).toFixed(2):1});
   $('o-p').textContent=f0(P)+' ₴';
   $('o-f').textContent=F?f0(F)+' ₴':'немає';
   $('o-mk').textContent=mk>0.5?f0(mk)+' ₴':'немає';
