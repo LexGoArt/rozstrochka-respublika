@@ -100,16 +100,6 @@ body[data-tab=s] .n4,body[data-tab=s] #more{display:none}
 .todo{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
 .todo li{padding:14px 0;border-bottom:1px solid var(--line);font-size:16px}
 /* конкуренти */
-.ctx{margin-top:40px}
-.ctx details{margin:0;border:0;border-radius:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.ctx summary{font-size:20px;padding:0;min-height:64px}
-.cmp{display:grid;gap:0;padding:0 0 8px}
-.cc{border-top:1px solid var(--line);padding:16px 0}
-.cc h3{margin:0 0 10px;font-size:18px}
-.cc ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
-.cc li{display:grid;grid-template-columns:1fr;font-size:16px;line-height:1.35}
-.cc li em{font-style:normal;color:var(--ink2);font-size:14px}
-.src{font-size:14px;color:var(--ink2);margin:24px 0 0;max-width:34em}
 /* липка панель */
 .sticky{position:fixed;left:0;right:0;bottom:0;z-index:10;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(17,17,17,.94);-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);color:#fff;transform:translateY(110%);transition:transform .25s var(--ease)}
 .sticky.on{transform:none}
@@ -119,7 +109,6 @@ body[data-tab=s] .n4,body[data-tab=s] #more{display:none}
 .sticky .arr{align-self:center;font-size:20px;color:#3BC77F;padding:8px 0 8px 8px}
 @media (min-width:700px){
   h1{font-size:40px}.q{grid-template-columns:1fr 1fr}.big{font-size:44px}
-  .cmp{grid-template-columns:1fr 1fr;column-gap:24px}.cc li{grid-template-columns:110px 1fr;gap:8px}.cc li em{font-size:16px}
 }
 @media (max-width:360px){.big{font-size:28px}.big small{font-size:18px}dl{font-size:15px}dt{padding-right:8px}dl .tt{font-size:18px}.fields{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -213,36 +202,10 @@ body[data-tab=s] .n4,body[data-tab=s] #more{display:none}
   <h2>Що уточнити в «Республіки»</h2>
   <ul class=todo>
     <li>Черга через 3 роки: разом 7 чи 8 років.</li>
-    <li>Як змінюється ріст платежу, якщо відсотки не 6%.</li>
     <li>Зразок договору: як там записані черги.</li>
   </ul>
 </section>
 
-<section class=ctx>
-  <details>
-    <summary>Інші забудовники (5)</summary>
-    <div class=cmp>
-      <div class=cc><h3>Свідомий</h3><ul>
-        <li><em>Перший внесок</em>30%</li>
-        <li><em>Як платять</em>50% до введення, решта щомісяця до 2030</li>
-        <li><em>Приклад</em>60 міс по 29 200 ₴</li>
-        <li><em>Відсотки</em>немає, ціна 61 000 ₴ за м²</li></ul></div>
-      <div class=cc><h3>Orange Park</h3><ul>
-        <li><em>Перший внесок</em>«30 800», одиниці не названо</li>
-        <li><em>Як платять</em>до 30 міс</li>
-        <li><em>Відсотки</em>закладено в графік, привʼязка до $</li></ul></div>
-      <div class=cc><h3>Нішпарк</h3><ul>
-        <li><em>Перший внесок</em>30%</li></ul></div>
-      <div class=cc><h3>Плаза квартал</h3><ul>
-        <li><em>Приклад</em>1-кімнатна 1 626 700 ₴ на 60 міс</li>
-        <li><em>Відсотки</em>закладено в ціну метра</li></ul></div>
-      <div class=cc><h3>ПриватБанк, кредит</h3><ul>
-        <li><em>Строк</em>до 20 років</li>
-        <li><em>Ставка</em>17,5% або 18% річних, не перевірено</li></ul></div>
-    </div>
-  </details>
-  <p class=src>Схема зі слів колеги після розмови з відділом продажу «Республіки», нарада 18.11.2026, і їхній графік платежів від 19.11.2026. Після ключів платіж щомісяця росте на 0,48%, у графіку це названо «6% річних». На їхньому сайті схеми немає.</p>
-</section>
 
 </main>
 <div class=sticky id=sticky aria-hidden=true><button type=button tabindex=-1>
@@ -302,7 +265,7 @@ function render(){
   $('k-first').hidden=$('d-first').hidden=!p.F;
   $('d-first').textContent=money(p.F);$('d-pre').textContent=money(p.F+p.pre);$('d-rest').textContent=money(p.after);
   $('d-mk').textContent=p.mk>0.5?money(p.mk):'немає';$('d-total').textContent=money(P+p.mk);
-  $('note').hidden=!p.g;$('note').textContent='Після ключів платіж щомісяця росте на '+pct(Math.round(p.g*1e4)/100)+'%, як у графіку «Республіки».';
+  $('note').hidden=!p.g;$('note').textContent='Після ключів платіж щомісяця росте на '+pct(Math.round(p.g*1e4)/100)+'% ('+pct(rate)+'% річних), з першого місяця до останнього.';
   $('n1v').textContent=yrs(n1);$('n2v').textContent=yrs(n2);
   $('ratev').textContent=rate?pct(rate)+'% річних':'немає';
   $('sm1').textContent=money(p.m1);$('sm2').textContent=money(p.m2);
