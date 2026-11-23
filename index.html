@@ -4,140 +4,176 @@
 <meta name=theme-color content="#ffffff">
 <title>Розстрочка як у Республіки</title>
 <style>
-:root{--ink:#111;--ink2:#6B6B6B;--line:#E6E6E6;--tile:#F4F4F4;--paper:#fff;--g:#1E9E5A;--g-bg:#E8F5EE;--g-ink:#146B3A;--r:#C2410C;--r-bg:#FBEDE6;--r-ink:#9A3412}
+:root{--ink:#111;--ink2:#555;--ink3:#8A8A8A;--line:#E6E6E6;--paper:#fff;--g:#1E9E5A;--g-bg:#E6F4EC;--g-ink:#135F36;--r:#C2410C;--r-bg:#FBEAE1;--r-ink:#8F2F0A;--ease:cubic-bezier(.23,1,.32,1)}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.45 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-main{max-width:880px;margin:0 auto;padding:24px 16px 48px}
-h1{font-size:30px;line-height:1.1;letter-spacing:-.025em;margin:0 0 28px}
-h2{font-size:20px;letter-spacing:-.01em;margin:0 0 16px}
-section{margin:0 0 36px}
+main{max-width:1080px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:28px;line-height:32px;letter-spacing:-.025em;margin:0 0 20px}
+.eb{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin:0 0 12px}
 [hidden]{display:none!important}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+
 /* схема */
-.bar{display:flex;gap:6px}
-.seg{border-radius:12px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;justify-content:center;min-height:76px;min-width:0;transition:flex-grow .25s cubic-bezier(.33,1,.68,1)}
-.seg b{font-size:16px;line-height:1.2}
-.seg span{font-size:13px;line-height:1.25;margin-top:3px}
-.s1,.s2{background:var(--g-bg);color:var(--g-ink);border:1.5px solid #BFE3CF}
-.s3{background:var(--r-bg);color:var(--r-ink);border:1.5px solid #F2C9B5}
-.s3.free{background:var(--g-bg);color:var(--g-ink);border-color:#BFE3CF}
-.s1{min-width:72px}
-.tl{position:relative;height:16px;margin:12px 0 0}
-.tl::before{content:"";position:absolute;left:5px;right:5px;top:7px;height:2px;background:var(--line)}
-.tl i{position:absolute;top:2px;width:12px;height:12px;border-radius:50%;background:#B5B5B5;margin-left:-6px}
-.tl .k{background:var(--r);transition:left .25s cubic-bezier(.33,1,.68,1)}
-.tll{position:relative;height:58px;font-size:14px;color:var(--ink2);margin-top:6px}
-.tll span{position:absolute;top:0;line-height:1.25}
+.sch{margin:0 0 28px}
+.bar{display:flex;gap:4px}
+.seg{border-radius:10px;padding:10px 8px;text-align:center;display:flex;flex-direction:column;justify-content:center;min-height:56px;min-width:0;transition:flex-grow 220ms var(--ease)}
+.seg b{font-size:18px;line-height:1.1;letter-spacing:-.01em}
+.seg span{font-size:13px;line-height:1.2;margin-top:2px}
+.s1,.s2{background:var(--g-bg);color:var(--g-ink)}
+.s3{background:var(--r-bg);color:var(--r-ink)}
+.s3.free{background:var(--g-bg);color:var(--g-ink)}
+.s1{min-width:64px}
+.tl{position:relative;height:12px;margin:10px 0 0}
+.tl::before{content:"";position:absolute;left:5px;right:5px;top:5px;height:2px;background:var(--line)}
+.tl i{position:absolute;top:0;width:12px;height:12px;border-radius:50%;background:#BDBDBD;margin-left:-6px}
+.tl .k{background:var(--ink);transition:left 220ms var(--ease)}
+.tll{position:relative;height:44px;font-size:14px;color:var(--ink2);margin-top:6px}
+.tll span{position:absolute;top:0;line-height:1.3}
+.tll small{display:block;font-size:13px;color:var(--ink3)}
 .tll .a{left:0}.tll .c{right:0;text-align:right}
-.tll .b{transform:translateX(-50%);text-align:center;color:var(--ink);font-weight:600;transition:left .25s cubic-bezier(.33,1,.68,1)}
-.tll .b small{display:block;max-width:120px;font-weight:400;color:var(--ink2);font-size:13px}
-.leg{display:flex;gap:18px;font-size:14px;color:var(--ink2);margin-top:8px}
-.leg span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:var(--g)}
+.tll .b{transform:translateX(-50%);text-align:center;color:var(--ink);font-weight:600;transition:left 220ms var(--ease)}
+.tll .b small{font-weight:400}
+.leg{display:flex;gap:16px;font-size:14px;color:var(--ink2)}
+.leg span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--g)}
 .leg span+span::before{background:var(--r)}
+
+/* розкладка */
+.lay{display:grid;grid-template-columns:1fr;grid-template-areas:"hero" "sl" "sec";column-gap:40px}
+.side{display:contents}
+.hero{grid-area:hero}.sls{grid-area:sl}.sec{grid-area:sec}
+
+/* головні платежі */
+.hero{position:sticky;top:0;z-index:5;margin:0 -16px 24px;padding:max(14px,env(safe-area-inset-top)) 16px 16px;background:var(--ink);color:#fff;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hero .l{font-size:14px;color:#BDBDBD;font-weight:500}
+.hero .n{font-size:30px;line-height:1.05;font-weight:700;letter-spacing:-.03em;margin-top:4px}
+.hero .n small{font-size:18px;font-weight:600;letter-spacing:0;margin-left:3px}
+.hero .s{font-size:14px;color:#E5E5E5;margin-top:6px}
+
 /* повзунки */
-.sls{display:grid;gap:14px}
-.sl{display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:12px}
+.sls{display:grid;gap:22px;align-content:start}
+.sl{display:grid;grid-template-columns:1fr auto;align-items:baseline;column-gap:12px}
 .sl label{font-size:16px;color:var(--ink2)}
-.sl .v{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
-.sl input{grid-column:1/-1;grid-row:2}
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:40px;margin:0;background:transparent;cursor:pointer;--p:50%}
-input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:linear-gradient(to right,var(--ink) var(--p),var(--line) var(--p))}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;margin-top:-12px;border-radius:50%;background:#fff;border:2px solid var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.18);transition:transform .1s}
-input[type=range]:active::-webkit-slider-thumb{transform:scale(1.1)}
-input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(--line)}
-input[type=range]::-moz-range-progress{height:6px;border-radius:3px;background:var(--ink)}
-input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;border:2px solid var(--ink)}
+.sl .v{font-size:22px;font-weight:700;letter-spacing:-.01em;text-align:right}
+.sl input{grid-column:1/-1}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:44px;margin:0;background:transparent;cursor:pointer;--p:50%}
+input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:4px;background:linear-gradient(to right,var(--ink) var(--p),var(--line) var(--p))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;margin-top:-12px;border-radius:50%;background:#fff;border:2px solid var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.16);transition:transform 140ms var(--ease)}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.08)}
+input[type=range]::-moz-range-track{height:8px;border-radius:4px;background:var(--line)}
+input[type=range]::-moz-range-progress{height:8px;border-radius:4px;background:var(--ink)}
+input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:#fff;border:2px solid var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.16)}
 input[type=range]:focus{outline:none}
-input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(30,158,90,.45)}
-/* підсумки */
-.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.t{background:var(--tile);border-radius:14px;padding:14px}
-.t .l{font-size:14px;color:var(--ink2);line-height:1.3}
-.t .n{font-size:22px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:6px;line-height:1.15}
-.t .n small{font-size:15px;font-weight:600;letter-spacing:0}
-.t .s{font-size:14px;color:var(--ink2);margin-top:4px}
+input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(30,158,90,.4)}
+input[type=range]:focus-visible::-moz-range-thumb{box-shadow:0 0 0 4px rgba(30,158,90,.4)}
+
+/* другорядні підсумки */
+.sec{display:grid;grid-template-columns:1fr 1fr;column-gap:16px;margin-top:28px}
+.t{border-top:1px solid var(--line);padding:12px 0 14px}
+.t .l{font-size:15px;color:var(--ink2);line-height:1.3}
+.t .n{font-size:20px;font-weight:600;letter-spacing:-.01em;margin-top:4px}
+.t .s{font-size:15px;color:var(--ink3);margin-top:2px}
 .t.over .n{color:var(--r)}
-.t.sum{background:var(--ink);color:#fff}.t.sum .l{color:#C4C4C4}
-@media (min-width:700px){
-  h1{font-size:36px}
-  .sl{grid-template-columns:220px 1fr 120px}.sl input{grid-column:2;grid-row:1}
-  .tiles{grid-template-columns:repeat(3,1fr)}
-  .t .n{font-size:26px}
-  .seg b{font-size:17px}.seg span{font-size:14px}
+.t.sum .n{font-weight:700}
+
+@media (min-width:900px){
+  main{padding:40px 32px 64px}
+  h1{font-size:36px;line-height:40px;margin-bottom:28px}
+  .sch{margin-bottom:40px}
+  .seg{min-height:64px}.seg b{font-size:20px}.seg span{font-size:14px}
+  .lay{grid-template-columns:1fr 380px;grid-template-areas:"sl side"}
+  .side{display:block;grid-area:side;position:sticky;top:24px;align-self:start}
+  .hero{position:static;margin:0;border-radius:18px;padding:22px 22px 24px;grid-template-columns:1fr;gap:20px}
+  .hero>div+div{border-top:1px solid #333;padding-top:18px}
+  .hero .n{font-size:40px}.hero .n small{font-size:22px}
+  .hero .l{font-size:15px}
+  .sec{margin-top:8px}
 }
-@media (max-width:360px){.t .n{font-size:19px}.seg span{font-size:12px}}
+@media (max-width:360px){.hero .n{font-size:26px}.hero .n small{font-size:16px}.seg span{font-size:12px}.t .n{font-size:18px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head><body><main>
 
 <h1>Розстрочка на квартиру як у «Республіки»</h1>
 
-<section aria-labelledby=h-sch>
-  <h2 id=h-sch>Схема оплати</h2>
+<section class=sch aria-label="Схема оплати">
+  <p class=eb>Схема оплати</p>
   <div class=bar>
-    <div class="seg s1" id=s1><b id=s1b>10%</b><span>перший внесок</span></div>
-    <div class="seg s2" id=s2><b>до 50% до ключів</b><span>без здорожчання</span></div>
-    <div class="seg s3" id=s3><b>50% після ключів</b><span id=s3s>здорожчання 6% річних</span></div>
+    <div class="seg s1" id=s1><b id=s1b>10%</b><span>внесок</span></div>
+    <div class="seg s2" id=s2><b id=s2b>40%</b><span>до ключів</span></div>
+    <div class="seg s3" id=s3><b>50%</b><span id=s3s>після ключів</span></div>
   </div>
   <div class=tl aria-hidden=true><i style="left:5px"></i><i class=k id=kd></i><i style="left:calc(100% - 5px)"></i></div>
-  <div class=tll aria-hidden=true><span class=a>Договір</span><span class=b id=kl>Ключі<small>введення в експлуатацію</small></span><span class=c>Кінець<br>розстрочки</span></div>
-  <div class=leg><span>без відсотків</span><span>зі здорожчанням</span></div>
+  <div class=tll aria-hidden=true>
+    <span class=a>Договір<small>сьогодні</small></span>
+    <span class=b id=kl>Ключі<small id=kls></small></span>
+    <span class=c>Кінець<small id=kcs></small></span>
+  </div>
+  <div class=leg><span>без відсотків</span><span id=leg2>зі здорожчанням</span></div>
 </section>
 
-<section aria-labelledby=h-calc>
-  <h2 id=h-calc>Розрахунок</h2>
+<div class=lay>
   <div class=sls>
-    <div class=sl><label for=area>Площа, м²</label><span class=v id=area-v></span><input id=area type=range min=20 max=150 step=0.5 value=70></div>
-    <div class=sl><label for=price>Ціна м², ₴</label><span class=v id=price-v></span><input id=price type=range min=20000 max=120000 step=500 value=54000></div>
-    <div class=sl><label for=fp>Перший внесок</label><span class=v id=fp-v></span><input id=fp type=range min=0 max=50 step=1 value=10></div>
-    <div class=sl><label for=n1>Місяців до ключів</label><span class=v id=n1-v></span><input id=n1 type=range min=3 max=48 step=1 value=12></div>
-    <div class=sl><label for=n2>Років після ключів</label><span class=v id=n2-v></span><input id=n2 type=range min=1 max=10 step=1 value=5></div>
-    <div class=sl><label for=rate>Здорожчання, % річних</label><span class=v id=rate-v></span><input id=rate type=range min=0 max=12 step=0.5 value=6></div>
+    <p class=eb style="margin:0 0 -10px">Розрахунок</p>
+    <div class=sl><label for=area>Площа</label><span class="v num" id=area-v></span><input id=area type=range min=20 max=150 step=0.5 value=70></div>
+    <div class=sl><label for=price>Ціна за м²</label><span class="v num" id=price-v></span><input id=price type=range min=20000 max=120000 step=500 value=54000></div>
+    <div class=sl><label for=fp>Перший внесок</label><span class="v num" id=fp-v></span><input id=fp type=range min=0 max=50 step=1 value=10></div>
+    <div class=sl><label for=n1>Місяців до ключів</label><span class="v num" id=n1-v></span><input id=n1 type=range min=3 max=48 step=1 value=12></div>
+    <div class=sl><label for=n2>Років після ключів</label><span class="v num" id=n2-v></span><input id=n2 type=range min=1 max=10 step=1 value=5></div>
+    <div class=sl><label for=rate>Здорожчання, % річних</label><span class="v num" id=rate-v></span><input id=rate type=range min=0 max=12 step=0.5 value=6></div>
   </div>
-</section>
 
-<section aria-live=polite>
-  <div class=tiles>
-    <div class=t><div class=l>Ціна квартири</div><div class=n id=o-p></div></div>
-    <div class=t><div class=l>Перший внесок</div><div class=n id=o-f></div></div>
-    <div class=t><div class=l>Платіж до ключів</div><div class=n id=o-m1></div></div>
-    <div class=t><div class=l>Платіж після ключів</div><div class=n id=o-m2></div><div class=s id=o-m2s></div></div>
-    <div class="t over"><div class=l>Переплата</div><div class=n id=o-mk></div><div class=s id=o-mks></div></div>
-    <div class="t sum"><div class=l>Разом клієнт платить</div><div class=n id=o-t></div></div>
-  </div>
-</section>
+  <aside class=side aria-live=polite>
+    <div class=hero>
+      <div><div class=l>Щомісяця до ключів</div><div class="n num" id=o-m1></div><div class=s id=o-m1s></div></div>
+      <div><div class=l>Щомісяця після ключів</div><div class="n num" id=o-m2></div><div class=s id=o-m2s></div></div>
+    </div>
+    <div class=sec>
+      <div class=t><div class=l>Ціна квартири</div><div class="n num" id=o-p></div></div>
+      <div class=t><div class=l>Перший внесок</div><div class="n num" id=o-f></div></div>
+      <div class="t over"><div class=l>Переплата</div><div class="n num" id=o-mk></div><div class=s id=o-mks></div></div>
+      <div class="t sum"><div class=l>Разом клієнт платить</div><div class="n num" id=o-t></div></div>
+    </div>
+  </aside>
+</div>
 
 </main>
 <script>
 const $=id=>document.getElementById(id);
 const f0=n=>Math.round(n).toLocaleString('uk-UA');
 const pct=v=>String(v).replace('.',',');
+const yr=y=>y+' '+(y===1?'рік':(y>=2&&y<=4?'роки':'років'));
 /* як у графіку «Республіки» від 19.11.2026: після ключів залишок ділиться на рівні частини, і платіж щомісяця росте; 6% річних = +0,48% на місяць */
 const grow=r=>r?Math.floor((Math.pow(1+r/100,1/12)-1)*1e4)/1e4:0;
 const LBL={area:v=>pct(v)+' м²',price:v=>f0(v)+' ₴',fp:v=>v+'%',n1:v=>String(v),n2:v=>String(v),rate:v=>pct(v)+'%'};
 const ids=Object.keys(LBL);
 function fill(el){el.style.setProperty('--p',((el.value-el.min)/(el.max-el.min)*100)+'%')}
-function place(){const s3=$('s3'),bar=s3.parentNode,x=s3.offsetLeft-bar.offsetLeft-3,W=bar.offsetWidth,w=$('kl').offsetWidth/2;
-  $('kd').style.left=x+'px';$('kl').style.left=Math.min(Math.max(x,w+64),W-w-76)+'px'}
+function place(){const s3=$('s3'),bar=s3.parentNode,x=s3.offsetLeft-bar.offsetLeft-2,W=bar.offsetWidth,w=$('kl').offsetWidth/2;
+  $('kd').style.left=x+'px';$('kl').style.left=Math.min(Math.max(x,w+72),W-w-72)+'px'}
 function calc(){
   const v={};ids.forEach(k=>{const el=$(k);v[k]=+el.value;fill(el);const t=LBL[k](v[k]);$(k+'-v').textContent=t;el.setAttribute('aria-valuetext',t)});
   const P=v.area*v.price,F=P*v.fp/100,K=P/2,pre=K-F,R=P-K,n2=v.n2*12,g=grow(v.rate);
   const m1=pre/v.n1,m2=R/n2,last=m2*Math.pow(1+g,n2-1),after=g?m2*(Math.pow(1+g,n2)-1)/g:R,mk=after-R;
+  $('o-m1').innerHTML=f0(m1)+'<small>₴</small>';
+  $('o-m1s').textContent=v.n1+' міс, рівно';
+  $('o-m2').innerHTML=f0(m2)+'<small>₴</small>';
+  $('o-m2s').textContent=g?'росте до '+f0(last)+' ₴':yr(v.n2)+', рівно';
   $('o-p').textContent=f0(P)+' ₴';
   $('o-f').textContent=F?f0(F)+' ₴':'немає';
-  $('o-m1').innerHTML=f0(m1)+' <small>₴/міс</small>';
-  $('o-m2').innerHTML=f0(m2)+' <small>₴/міс</small>';
-  $('o-m2s').textContent=g?'росте до '+f0(last)+' ₴':'рівний весь строк';
   $('o-mk').textContent=mk>0.5?f0(mk)+' ₴':'немає';
   $('o-mks').textContent=mk>0.5?pct((mk/P*100).toFixed(1))+'% від ціни':'';
   $('o-t').textContent=f0(P+mk)+' ₴';
   /* схема */
-  $('s1').hidden=!v.fp;$('s1b').textContent=v.fp+'%';
-  $('s1').style.flex=v.fp+' 1 0';$('s2').style.flex=(50-v.fp)+' 1 0';$('s3').style.flex='50 1 0';
+  $('s1').hidden=!v.fp;$('s1b').textContent=v.fp+'%';$('s2b').textContent=(50-v.fp)+'%';
+  $('s1').style.flexGrow=v.fp;$('s2').style.flexGrow=50-v.fp;$('s3').style.flexGrow=50;
   $('s2').hidden=v.fp>=50;
-  $('s3s').textContent=v.rate?'здорожчання '+pct(v.rate)+'% річних':'без здорожчання';
+  $('s3s').textContent=v.rate?'після ключів, +'+pct(v.rate)+'%':'після ключів';
   $('s3').classList.toggle('free',!v.rate);
+  $('leg2').hidden=!v.rate;
+  $('kls').textContent='через '+v.n1+' міс';
+  $('kcs').textContent='ще '+yr(v.n2);
   requestAnimationFrame(place);
 }
+document.querySelectorAll('.seg').forEach(s=>{s.style.flexBasis='0';s.style.flexShrink='1'});
 ids.forEach(k=>$(k).addEventListener('input',calc));
 addEventListener('resize',place);$('s3').addEventListener('transitionend',place);
 calc();
