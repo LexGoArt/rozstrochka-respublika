@@ -20,15 +20,27 @@ h1{font-size:26px;line-height:1.15;letter-spacing:-.02em;font-weight:800;margin:
 .card+.card{margin-top:12px}
 .cap{font-size:14px;font-weight:600;color:var(--ink3);margin:0 0 12px}
 /* головне */
-.hero{position:sticky;top:8px;z-index:5;display:grid;grid-template-columns:1fr 1fr;gap:12px;background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.hero{display:grid;grid-template-columns:1fr;gap:16px;box-shadow:0 8px 24px rgba(0,0,0,.06)}
 .hero .l{font-size:14px;color:var(--ink2);font-weight:500}
-.hero .n{font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-top:4px}
+.hero .n{font-size:36px;font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-top:4px}
 .hero .n small{font-size:17px;font-weight:600;margin-left:3px;color:var(--ink2)}
 .hero .s{font-size:14px;color:var(--ink2);margin-top:4px}
-.hero>div+div{border-left:1px solid var(--hair);padding-left:12px}
-.yrs{display:flex;align-items:flex-end;gap:4px;height:32px;margin-top:10px}
-.yrs i{flex:1;border-radius:5px;background:var(--r);transition:height 220ms var(--ease),opacity 220ms var(--ease)}
-.yrs.free i{background:var(--g);opacity:.35!important}
+.hero>div+div{border-top:1px solid var(--hair);padding-top:16px}
+.hero .lastw{margin-top:14px}
+.sched{margin-top:14px;border-radius:14px;background:var(--bg)}
+.sched summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 14px;font-size:15px;font-weight:600;border-radius:14px;min-height:44px}
+.sched summary::-webkit-details-marker{display:none}
+.sched summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg) translateY(-2px);transition:transform 200ms var(--ease);flex:none}
+.sched[open] summary::after{transform:rotate(-135deg) translateY(-2px)}
+.sched summary:focus-visible{outline:3px solid rgba(30,158,90,.4)}
+.list{max-height:50vh;overflow:auto;padding:0 14px 10px;font-size:15px;-webkit-overflow-scrolling:touch}
+.list h4{margin:12px 0 4px;font-size:13px;font-weight:600;color:var(--ink3)}
+.list .r{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--hair)}
+.list .r span{color:var(--ink2)}.list .r b{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+/* загальний строк */
+.total{margin:0 0 14px}
+.total b{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.15}
+.total span{font-size:14px;color:var(--ink2)}
 /* схема-капсула */
 .bar{display:flex;gap:3px;border-radius:14px;overflow:hidden}
 .seg{min-width:0;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;min-height:58px;transition:flex-grow 220ms var(--ease)}
@@ -74,14 +86,14 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
   h1{font-size:34px;margin-bottom:20px}
   .lay{display:grid;grid-template-columns:1fr 380px;gap:16px;align-items:start}
   .side{position:sticky;top:16px}
-  .hero{position:static;grid-template-columns:1fr;gap:16px;padding:22px}
-  .hero>div+div{border-left:0;padding-left:0;border-top:1px solid var(--hair);padding-top:16px}
-  .hero .n{font-size:40px}.hero .l br{display:none}
+  .hero{padding:22px}
+  .hero .n{font-size:40px}
+  .side:has(details[open]){position:static}
   .sec{margin-top:12px}
   .lay>div>.card+.card{margin-top:16px}
 }
 @media (max-width:899px){.lay>.side{display:contents}.lay{display:flex;flex-direction:column}.lay .hero{order:-1;margin-bottom:12px}.lay .sec{margin-top:12px}}
-@media (max-width:360px){.hero .n{font-size:25px}.seg span{font-size:11px}}
+@media (max-width:360px){.hero .n{font-size:30px}.seg span{font-size:11px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head><body><main>
 
@@ -90,6 +102,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 <div class=lay>
   <div>
     <section class=card aria-label="Етапи оплати">
+      <div class=total><span>Загальний строк розстрочки</span><b id=tot></b><span id=tots></span></div>
       <p class=cap>Етапи оплати</p>
       <div class=bar>
         <div class="seg s1" id=s1><b id=s1b></b><span>Перший внесок</span></div>
@@ -110,8 +123,10 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
   </div>
   <aside class=side aria-live=polite>
     <div class="card hero">
-      <div><div class=l>Щомісяця<br>до отримання ключів</div><div class="n num" id=o-m1></div><div class=s id=o-m1s></div></div>
-      <div><div class=l id=o-m2l>Перший платіж<br>після отримання ключів</div><div class="n num" id=o-m2></div><div class=s id=o-m2a></div><div class=yrs id=yrs aria-hidden=true><i></i><i></i><i></i><i></i><i></i></div><div class=s id=o-m2s></div></div>
+      <div><div class=l>Щомісяця до отримання ключів</div><div class="n num" id=o-m1></div><div class=s id=o-m1s></div></div>
+      <div><div class=l id=o-m2l>Перший платіж після отримання ключів</div><div class="n num" id=o-m2></div><div class=s id=o-m2a></div>
+        <details class=sched id=sched><summary>Усі платежі по місяцях</summary><div class=list id=list></div></details>
+        <div class=lastw id=lastw><div class=l>Останній платіж</div><div class="n num" id=o-m2s></div></div></div>
     </div>
     <div class=sec>
       <div class=t><div class=l>Базова вартість квартири</div><div class="n num" id=o-p></div></div>
@@ -135,6 +150,15 @@ const ids=Object.keys(LBL);
 function fill(el){el.style.setProperty('--p',((el.value-el.min)/(el.max-el.min)*100)+'%')}
 function place(){if(!document.getElementById('kd'))return;const s3=$('s3'),bar=s3.parentNode,x=s3.offsetLeft-bar.offsetLeft-2,W=bar.offsetWidth,w=$('kl').offsetWidth/2;
   $('kd').style.left=x+'px';$('kl').style.left=Math.min(Math.max(x,w+72),W-w-72)+'px'}
+/* загальний строк: 72 міс = 6 років, 78 = 6,5 року, 73 = 6 років 1 міс */
+function term(m){const y=Math.floor(m/12),r=m%12;return r===0?yr(y):r===6?y+',5 року':yr(y)+' '+r+' міс'}
+/* графік по місяцях: до ключів одним рядком, після ключів кожен місяць */
+let S=null;
+function list(){if(!S)return;const o=[];
+  if(S.F)o.push('<h4>Перший внесок</h4><div class=r><span>При підписанні договору</span><b>'+f0(S.F)+' ₴</b></div>');
+  o.push('<h4>До отримання ключів</h4><div class=r><span>'+S.n1+' платежів</span><b>по '+f0(S.m1)+' ₴</b></div>');
+  for(let i=0;i<S.n2;i++){if(i%12===0)o.push('<h4>Після отримання ключів, '+(i/12+1)+'-й рік</h4>');o.push('<div class=r><span>'+(i+1)+'-й місяць</span><b>'+f0(S.m2*Math.pow(1+S.g,i))+' ₴</b></div>')}
+  $('list').innerHTML=o.join('')}
 function calc(){
   const v={};ids.forEach(k=>{const el=$(k);v[k]=+el.value;fill(el);const t=LBL[k](v[k]);$(k+'-v').textContent=t;el.setAttribute('aria-valuetext',t)});
   const P=v.area*v.price,F=P*v.fp/100,K=P/2,pre=K-F,R=P-K,n2=v.n2*12,g=grow(v.rate);
@@ -142,12 +166,11 @@ function calc(){
   $('o-m1').innerHTML=f0(m1)+'<small>₴</small>';
   $('o-m1s').textContent=v.n1+' однакових щомісячних платежів';
   $('o-m2').innerHTML=f0(m2)+'<small>₴</small>';
-  $('o-m2a').textContent=g?'':n2+' однакових щомісячних платежів';$('o-m2a').hidden=!!g;$('o-m2l').innerHTML=(g?'Перший платіж':'Щомісяця')+'<br>після отримання ключів';
-  $('o-m2s').innerHTML=g?'Останній платіж:<br>'+f0(last)+' ₴':'';
+  $('o-m2a').textContent=g?'':n2+' однакових щомісячних платежів';$('o-m2a').hidden=!!g;$('o-m2l').textContent=(g?'Перший платіж':'Щомісяця')+' після отримання ключів';
+  $('lastw').hidden=!g;$('o-m2s').innerHTML=f0(last)+'<small>₴</small>';
+  S={F,m1,n1:v.n1,m2,g,n2};if($('sched').open)list();
+  const T=v.n1+n2;$('tot').textContent=term(T);$('tots').textContent=v.n1+' міс до отримання ключів і '+yr(v.n2)+' після';
   $('rate-h').textContent=g?'Діє лише після отримання ключів: кожен платіж на '+pct((g*100).toFixed(2))+'% більший за попередній':'Без здорожчання: усі платежі після отримання ключів однакові';
-  /* стовпчик на кожен рік після ключів: сходинки показують, що платіж росте (точні суми в підписі) */
-  const yb=document.querySelectorAll('#yrs i'),Y=v.n2;$('yrs').classList.toggle('free',!g);
-  yb.forEach((b,k)=>{b.hidden=k>=Y;b.style.height=(g&&Y>1?44+56*k/(Y-1):60)+'%';b.style.opacity=Y>1?(.28+.72*k/(Y-1)).toFixed(2):1});
   $('o-p').textContent=f0(P)+' ₴';
   $('o-f').textContent=F?f0(F)+' ₴':'немає';
   $('o-mk').textContent=mk>0.5?f0(mk)+' ₴':'немає';
@@ -167,6 +190,7 @@ function calc(){
 }
 document.querySelectorAll('.seg').forEach(s=>{s.style.flexBasis='0';s.style.flexShrink='1'});
 ids.forEach(k=>$(k).addEventListener('input',calc));
+$('sched').addEventListener('toggle',()=>{if($('sched').open)list()});
 addEventListener('resize',place);$('s3').addEventListener('transitionend',place);
 const segs=document.querySelectorAll('.seg');segs.forEach(x=>x.style.transition='none');
 calc();
