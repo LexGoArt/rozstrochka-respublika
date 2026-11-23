@@ -35,8 +35,12 @@ h1{font-size:26px;line-height:1.15;letter-spacing:-.02em;font-weight:800;margin:
 .sched summary:focus-visible{outline:3px solid rgba(30,158,90,.4)}
 .list{max-height:50vh;overflow:auto;padding:0 14px 10px;font-size:15px;-webkit-overflow-scrolling:touch}
 .list h4{margin:12px 0 4px;font-size:13px;font-weight:600;color:var(--ink3)}
-.list .r{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--hair)}
-.list .r span{color:var(--ink2)}.list .r b{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.list .r{display:grid;grid-template-columns:1fr 64px 106px;column-gap:8px;align-items:baseline;padding:7px 0;border-top:1px solid var(--hair)}
+.list .r span{color:var(--ink2)}.list .r b{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.list .r i{font-style:normal;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.list .hd{position:sticky;top:0;z-index:1;background:var(--bg);border-top:0;padding-top:10px;font-size:12px;font-weight:600;color:var(--ink3)}
+.list .hd span,.list .hd i,.list .hd b{color:var(--ink3);font-weight:600}
+.list .note{margin:10px 0 2px;font-size:13px;color:var(--ink3);line-height:1.4}
 /* загальний строк */
 .total{margin:0 0 14px}
 .total b{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.15}
@@ -168,10 +172,13 @@ function term(m){const y=Math.floor(m/12),r=m%12;return !y?r+' міс':r===0?yr(
 function ym(m){const y=Math.floor(m/12),r=m%12;return !y?r+' міс':r?yr(y)+' '+r+' міс':yr(y)}
 /* графік по місяцях: до ключів одним рядком, після ключів кожен місяць */
 let S=null;
-function list(){if(!S)return;const o=[];
-  if(S.F)o.push('<h4>Перший внесок</h4><div class=r><span>При підписанні договору</span><b>'+f0(S.F)+' ₴</b></div>');
-  o.push('<h4>До отримання ключів</h4><div class=r><span>'+S.n1+' платежів</span><b>по '+f0(S.m1)+' ₴</b></div>');
-  for(let i=0;i<S.n2;i++){if(i%12===0)o.push('<h4>Після отримання ключів, '+(i/12+1)+'-й рік</h4>');o.push('<div class=r><span>'+(i+1)+'-й місяць</span><b>'+f0(S.m2*Math.pow(1+S.g,i))+' ₴</b></div>')}
+/* % платежу як у графіку «Республіки»: до ключів частка від вартості квартири, після ключів частка від суми виплат після ключів, приведена до 50%; разом 100% */
+const p2=x=>pct(x.toFixed(2).replace(/\.00$/,''))+'%';
+function list(){if(!S)return;const o=['<div class="r hd"><span>Платіж</span><i>% платежу</i><b>Сума</b></div>'];
+  if(S.F)o.push('<h4>При підписанні договору</h4><div class=r><span>Внесок</span><i>'+p2(S.F/S.P*100)+'</i><b>'+f0(S.F)+' ₴</b></div>');
+  o.push('<h4>До отримання ключів</h4><div class=r><span>'+S.n1+' платежів</span><i>'+p2(S.m1/S.P*100)+'</i><b>по '+f0(S.m1)+' ₴</b></div>');
+  for(let i=0;i<S.n2;i++){const a=S.m2*Math.pow(1+S.g,i);if(i%12===0)o.push('<h4>Після отримання ключів, '+(i/12+1)+'-й рік</h4>');o.push('<div class=r><span>'+(i+1)+'-й місяць</span><i>'+p2(a/S.A*50)+'</i><b>'+f0(a)+' ₴</b></div>')}
+  o.push('<p class=note>% платежу рахується так, як у графіку «Республіки»: яку частину всієї розстрочки становить цей платіж. Разом усі платежі дають 100%.</p>');
   $('list').innerHTML=o.join('')}
 function calc(){
   const v={};ids.forEach(k=>{const el=$(k);v[k]=+el.value;fill(el);const t=LBL[k](v[k]);$(k+'-v').textContent=t;el.setAttribute('aria-valuetext',t)});
@@ -182,7 +189,7 @@ function calc(){
   $('o-m2').innerHTML=f0(m2)+'<small>₴</small>';
   $('o-m2a').textContent=g?'':n2+' однакових щомісячних платежів';$('o-m2a').hidden=!!g;$('o-m2l').textContent=(g?'Перший платіж':'Щомісяця')+' після отримання ключів';
   $('lastw').hidden=!g;$('o-m2s').innerHTML=f0(last)+'<small>₴</small>';
-  S={F,m1,n1:v.n1,m2,g,n2};if($('sched').open)list();
+  S={F,m1,n1:v.n1,m2,g,n2,P,A:after};if($('sched').open)list();
   const T=v.n1+n2;$('tot').textContent=term(T);$('tots').textContent=v.n1+' міс до отримання ключів і '+ym(n2)+' після';
   $('rate-h').textContent=g?'Діє лише після отримання ключів: кожен платіж на '+pct((g*100).toFixed(2))+'% більший за попередній':'Без здорожчання: усі платежі після отримання ключів однакові';
   $('mn1').innerHTML=f0(m1)+'<small>₴</small>';$('mn2').innerHTML=f0(m2)+'<small>₴</small>';$('mn3').innerHTML=f0(last)+'<small>₴</small>';
