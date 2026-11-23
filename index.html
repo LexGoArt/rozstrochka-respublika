@@ -8,7 +8,8 @@
 <style>
 /* Система C «Картки»: світло-сіре тло, білі картки з радіусом 22px, як віджети в телефоні.
    Гарнітура Onest. Зелений лише для «без відсотків» і повзунків, теплий червоний для здорожчання. Ритм 8px. */
-:root{--bg:#F2F2F4;--card:#fff;--ink:#111;--ink2:#5E5E63;--ink3:#8E8E93;--hair:#E5E5EA;--g:#1E9E5A;--g-bg:#E3F3EA;--g-ink:#126035;--r:#C2410C;--r-bg:#FBE9DF;--r-ink:#8F2F0A;--ease:cubic-bezier(.23,1,.32,1)}
+:root{--bg:#F2F2F4;--card:#fff;--ink:#111;--ink2:#5E5E63;--ink3:#8E8E93;--hair:#E5E5EA;--g:#1E9E5A;--g-bg:#E3F3EA;--g-ink:#126035;--r:#C2410C;--r-bg:#FBE9DF;--r-ink:#8F2F0A;--ease:cubic-bezier(.23,1,.32,1);--spring:cubic-bezier(.23,1,.32,1)}
+@supports (transition-timing-function:linear(0,1)){:root{--spring:linear(0, 0.017, 0.063, 0.128, 0.205, 0.29, 0.378, 0.465, 0.548, 0.625, 0.696, 0.76, 0.816, 0.864, 0.905, 0.939, 0.967, 0.989, 1.006, 1.019, 1.028, 1.034, 1.037, 1.038, 1.038, 1.037, 1.034, 1.031, 1.028, 1.025, 1.021, 1.018, 1.015, 1.012, 1.01, 1.008, 1)}}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.45 Onest,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
@@ -57,7 +58,7 @@ h1{font-size:26px;line-height:1.15;letter-spacing:-.02em;font-weight:800;margin:
 .total span{font-size:14px;color:var(--ink2)}
 /* схема-капсула */
 .bar{display:flex;gap:3px;border-radius:14px;overflow:hidden}
-.seg{min-width:0;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;min-height:58px;transition:flex-grow 220ms var(--ease)}
+.seg{min-width:0;padding:10px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center;min-height:58px;transition:flex-grow 520ms var(--spring),background-color 300ms ease-out,color 300ms ease-out}
 .seg b{font-size:18px;line-height:1.1}
 .seg span{font-size:12px;line-height:1.2;margin-top:2px}
 .s1,.s2{background:var(--g-bg);color:var(--g-ink)}.s3{background:var(--r-bg);color:var(--r-ink)}.s3.free{background:var(--g-bg);color:var(--g-ink)}
@@ -65,12 +66,12 @@ h1{font-size:26px;line-height:1.15;letter-spacing:-.02em;font-weight:800;margin:
 .tl{position:relative;height:12px;margin:12px 0 0}
 .tl::before{content:"";position:absolute;left:5px;right:5px;top:5px;height:2px;border-radius:1px;background:var(--hair)}
 .tl i{position:absolute;top:0;width:12px;height:12px;border-radius:50%;background:#C7C7CC;margin-left:-6px}
-.tl .k{background:var(--ink);transition:left 220ms var(--ease)}
+.tl .k{background:var(--ink);transition:left 520ms var(--spring)}
 .tll{position:relative;height:60px;font-size:14px;color:var(--ink2);margin-top:6px}
 .tll span{position:absolute;top:0;line-height:1.3}
 .tll small{display:block;font-size:12px;color:var(--ink3)}
 .tll .a{left:0}.tll .c{right:0;text-align:right}
-.tll .b{transform:translateX(-50%);text-align:center;color:var(--ink);font-weight:600;transition:left 220ms var(--ease)}
+.tll .b{transform:translateX(-50%);text-align:center;color:var(--ink);font-weight:600;transition:left 520ms var(--spring)}
 /* повзунки */
 .sl{display:grid;grid-template-columns:1fr auto;align-items:baseline;column-gap:12px;padding:10px 0 2px}
 .sl+.sl{border-top:1px solid var(--hair)}
@@ -119,8 +120,37 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 @media (min-width:900px){.mini{display:none}}
 @media (max-width:360px){.mini .n{font-size:17px}.mini>div{padding:0 6px}}
 /* рух: поява карток, перехід валюти, натискання */
-@keyframes rise{from{opacity:0;transform:translateY(12px)}}
-.rise{animation:rise 520ms cubic-bezier(.23,1,.32,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(16px) scale(.985);filter:blur(6px)}}
+.rise{animation:rise 640ms cubic-bezier(.23,1,.32,1) both}
+.pre{opacity:0}
+/* етапи оплати: смуга проявляється зліва направо, точки шкали «клацають» на місце */
+@keyframes segIn{from{clip-path:inset(0 100% 0 0 round 14px)}to{clip-path:inset(0 0 0 0 round 14px)}}
+@keyframes txtIn{from{opacity:0;transform:translateY(6px);filter:blur(3px)}}
+@keyframes lineIn{from{transform:scaleX(0)}}
+@keyframes dotIn{from{opacity:0;transform:scale(.4)}}
+.bar.in{animation:segIn 900ms cubic-bezier(.65,0,.35,1) both}
+.bar.in .seg>*{animation:txtIn 480ms cubic-bezier(.23,1,.32,1) both}
+.bar.in .s1>*{animation-delay:260ms}.bar.in .s2>*{animation-delay:420ms}.bar.in .s3>*{animation-delay:620ms}
+.tl.in::before{transform-origin:left;animation:lineIn 900ms cubic-bezier(.65,0,.35,1) both}
+.tl.in i{animation:dotIn 420ms var(--spring) both}
+.tl.in i:nth-child(1){animation-delay:120ms}.tl.in i:nth-child(2){animation-delay:520ms}.tl.in i:nth-child(3){animation-delay:880ms}
+.tll.in span{animation:txtIn 480ms cubic-bezier(.23,1,.32,1) both}
+.tll.in .a{animation-delay:200ms}.tll.in .b{animation-delay:600ms}.tll.in .c{animation-delay:940ms}
+@keyframes txtInB{from{opacity:0;transform:translate(-50%,6px);filter:blur(3px)}}
+.tll.in .b{animation-name:txtInB}
+.m .bar:not(.in){clip-path:inset(0 100% 0 0 round 14px)}.m .bar:not(.in) .seg>*,.m .tl:not(.in) i,.m .tll:not(.in) span{opacity:0}.m .tl:not(.in)::before{transform:scaleX(0)}
+/* мітка, що змінилась, проявляється з розмиття */
+@keyframes slot{from{opacity:0;transform:translateY(.4em);filter:blur(4px)}}
+.slot{animation:slot 340ms cubic-bezier(.23,1,.32,1)}
+/* компактна панель: комірки входять по черзі */
+.mini>div{transition:opacity 260ms ease-out,transform 420ms cubic-bezier(.32,.72,0,1),filter 260ms ease-out;opacity:0;transform:translateY(-6px);filter:blur(4px)}
+.mini.on>div{opacity:1;transform:none;filter:none}
+.mini.on>div:nth-child(2){transition-delay:50ms}.mini.on>div:nth-child(3){transition-delay:100ms}
+/* значення повзунка оживає, поки його тягнеш */
+.sl .v{transform-origin:right center;transition:transform 260ms var(--spring),color 160ms ease-out,filter 180ms ease-out,opacity 180ms ease-out}
+.sl:has(input:active) .v{transform:scale(1.08);color:var(--g-ink)}
+.cur button{transition:transform 140ms ease-out,color 200ms ease-out}.cur button:active{transform:scale(.96)}
+.swap .hero .n{transform:translateY(-3px)}.hero .n{transition:transform 200ms ease-out,filter 180ms ease-out,opacity 180ms ease-out}
 .fxw:not([hidden]){animation:rise 260ms cubic-bezier(.23,1,.32,1) both}
 .swap .num,.swap .list b,.swap .sl .v{filter:blur(3px);opacity:.5}
 .num,.list b,.sl .v{transition:filter 180ms ease-out,opacity 180ms ease-out}
@@ -213,10 +243,17 @@ function list(){if(!S)return;const o=['<div class="r hd"><span>Платіж</spa
   $('list').innerHTML=o.join('')}
 /* числа не стрибають, а плавно доїжджають до нового значення; рух перехоплюється з поточного місця */
 const RM=matchMedia('(prefers-reduced-motion: reduce)');
-function num(id,v,f,zero){const el=$(id);if(el===DUMMY)return;if(zero&&!(v>0.5)){el._v=0;el.textContent=zero;return}
-  const from=el._v==null?0:el._v;el._v=v;cancelAnimationFrame(el._r);
-  if(RM.matches||from===v||el._f!==f&&el._f){el._f=f;el.innerHTML=f(v);return}el._f=f;
-  const t0=performance.now(),D=from?300:700;const step=t=>{const k=Math.min(1,(t-t0)/D),e=1-Math.pow(1-k,3);el.innerHTML=f(from+(v-from)*e);if(k<1)el._r=requestAnimationFrame(step)};el._r=requestAnimationFrame(step)}
+function num(id,v,f,zero){const el=$(id);if(el===DUMMY)return;
+  if(zero&&!(v>0.5)){cancelAnimationFrame(el._r);el._on=0;el._d=0;el._v=0;el.style.filter='';el.textContent=zero;return}
+  if(el._on&&el._v===v&&el._c===CUR)return;
+  const from=el._d==null?0:el._d;el._v=v;el._c=CUR;cancelAnimationFrame(el._r);
+  if(RM.matches||Math.abs(v-from)<.5){el._on=0;el._d=v;el.style.filter='';el.innerHTML=f(v);return}
+  const first=el._d==null||from===0,t0=performance.now(),D=first?1100:320,P=first?4:3,rel=Math.abs(v-from)/Math.max(Math.abs(v),Math.abs(from),1),B=rel>.04?Math.min(2.5,rel*3):0;el._on=1;
+  const step=t=>{const k=Math.min(1,(t-t0)/D),e=1-Math.pow(1-k,P);el._d=from+(v-from)*e;el.innerHTML=f(el._d);
+    if(B)el.style.filter=k<1?'blur('+(B*Math.pow(1-k,2)).toFixed(2)+'px)':'';if(k<1)el._r=requestAnimationFrame(step);else el._on=0};el._r=requestAnimationFrame(step)}
+function txt(id,t){const el=$(id);if(el===DUMMY||el.textContent===t)return;const had=el.textContent!=='';el.textContent=t;
+  if(!had||RM.matches||!booted)return;el.classList.remove('slot');void el.offsetWidth;el.classList.add('slot')}
+let booted=false;
 function calc(){
   const v={};ids.forEach(k=>{const el=$(k);v[k]=+el.value;fill(el);const t=LBL[k](v[k]);$(k+'-v').textContent=t;el.setAttribute('aria-valuetext',t)});
   const P=v.area*v.price,F=P*v.fp/100,K=P/2,pre=K-F,R=P-K,n2=v.n2*12,g=grow(v.rate);
@@ -224,10 +261,10 @@ function calc(){
   num('o-m1',m1,mb);
   $('o-m1s').textContent=v.n1+' однакових щомісячних платежів';
   num('o-m2',m2,mb);
-  $('o-m2a').textContent=g?'':n2+' однакових щомісячних платежів';$('o-m2a').hidden=!!g;$('o-m2l').textContent=(g?'Перший платіж':'Щомісяця')+' після отримання ключів';
+  $('o-m2a').textContent=g?'':n2+' однакових щомісячних платежів';$('o-m2a').hidden=!!g;txt('o-m2l',(g?'Перший платіж':'Щомісяця')+' після отримання ключів');
   $('lastw').hidden=!g;num('o-m2s',last,mb);
   S={F,m1,n1:v.n1,m2,g,n2,P,A:after};if($('sched').open)list();
-  const T=v.n1+n2;$('tot').textContent=term(T);$('tots').textContent=v.n1+' міс до отримання ключів і '+ym(n2)+' після';
+  const T=v.n1+n2;txt('tot',term(T));$('tots').textContent=v.n1+' міс до отримання ключів і '+ym(n2)+' після';
   $('rate-h').textContent=g?'Діє лише після отримання ключів: кожен платіж на '+pct((g*100).toFixed(2))+'% більший за попередній':'Без здорожчання: усі платежі після отримання ключів однакові';
   num('mn1',m1,mb);num('mn2',m2,mb);num('mn3',last,mb);
   $('mc3').hidden=!g;$('mini').classList.toggle('two',!g);$('ml2').innerHTML=(g?'Перший платіж':'Щомісяця')+' після&nbsp;ключів';
@@ -262,7 +299,8 @@ $('sched').addEventListener('toggle',()=>{if($('sched').open)list()});
 /* список розкривається і згортається по висоті, а не стрибком */
 document.querySelector('#sched summary').addEventListener('click',e=>{const d=$('sched'),L=$('list');if(RM.matches)return;e.preventDefault();
   if(d._a)d._a.cancel();
-  if(!d.open){list();d.open=true;const h=L.offsetHeight;d._a=L.animate([{height:'0px',opacity:0},{height:h+'px',opacity:1}],{duration:360,easing:'cubic-bezier(.32,.72,0,1)'});d._a.onfinish=()=>d._a=null}
+  if(!d.open){list();d.open=true;const h=L.offsetHeight;d._a=L.animate([{height:'0px',opacity:0},{height:h+'px',opacity:1}],{duration:420,easing:'cubic-bezier(.32,.72,0,1)'});d._a.onfinish=()=>d._a=null;
+    [...L.children].slice(0,16).forEach((r,i)=>r.animate([{opacity:0,transform:'translateY(8px)',filter:'blur(3px)'},{opacity:1,transform:'none',filter:'blur(0)'}],{duration:380,delay:40+i*22,easing:'cubic-bezier(.23,1,.32,1)',fill:'backwards'}))}
   else{const h=L.offsetHeight;d.classList.add('closing');d._a=L.animate([{height:h+'px',opacity:1},{height:'0px',opacity:0}],{duration:240,easing:'cubic-bezier(.23,1,.32,1)'});d._a.onfinish=()=>{d.open=false;d.classList.remove('closing');d._a=null}}});
 /* панель зʼявляється, щойно низ великої картки зник під верхнім краєм */
 new IntersectionObserver(([e])=>{$('mini').classList.toggle('on',!e.isIntersecting&&e.boundingClientRect.top<0)},{rootMargin:'-24px 0px 0px 0px'}).observe(document.querySelector('.hero'));
@@ -272,6 +310,11 @@ calc();
 requestAnimationFrame(()=>requestAnimationFrame(()=>segs.forEach(x=>x.style.transition='')));
 thumb();document.fonts&&document.fonts.ready.then(()=>{const t=document.querySelector('.cur .th');t.style.transition='none';thumb();requestAnimationFrame(()=>t.style.transition='')});addEventListener('resize',thumb);
 /* картки зʼявляються по черзі, один раз при відкритті */
-if(!RM.matches)document.querySelectorAll('h1,.top,.card,.sec .t').forEach((el,i)=>{el.style.animationDelay=(i*55)+'ms';el.classList.add('rise')});
+if(!RM.matches){document.documentElement.classList.add('m');let n=0;const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;io.unobserve(e.target);const el=e.target;
+    if(el.matches('.bar,.tl,.tll')){el.classList.add('in');return}
+    el.style.animationDelay=(booted?0:n++*60)+'ms';el.classList.remove('pre');el.classList.add('rise')}),{rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('h1,.top,.card,.sec .t').forEach(el=>{el.classList.add('pre');io.observe(el)});
+  document.querySelectorAll('.bar,.tl,.tll').forEach(el=>io.observe(el));
+  setTimeout(()=>booted=true,50)}else booted=true;
 </script>
 </body></html>
