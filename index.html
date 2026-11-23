@@ -1,0 +1,265 @@
+<!doctype html><html lang=uk><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name=robots content="noindex,nofollow">
+<meta name=theme-color content="#ffffff">
+<title>Розстрочка як у Республіки</title>
+<style>
+:root{--ink:#111;--ink2:#6B6B6B;--ink3:#9A9A9A;--line:#E6E6E6;--line2:#D0D0D0;--tile:#F3F3F3;--paper:#fff;--g:#1E9E5A;--g-ink:#17703F;--g-bg:#EAF6EF;--r:16px;--ease:cubic-bezier(.33,1,.68,1)}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.45 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:720px;margin:0 auto;padding:28px 16px calc(110px + env(safe-area-inset-bottom))}
+h1{font-size:32px;line-height:1.08;letter-spacing:-.025em;margin:0 0 10px}
+.lead{font-size:19px;color:var(--ink2);margin:0 0 18px}
+.lead b{color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 36px;padding:0;list-style:none}
+.chips li{background:var(--tile);border-radius:999px;padding:7px 13px;font-size:15px;font-weight:600}
+.step{margin:0 0 36px}
+.step h2{display:flex;align-items:center;gap:10px;font-size:22px;letter-spacing:-.01em;margin:0 0 14px}
+.step h2 i{flex:0 0 30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;font-style:normal;font-size:15px;display:flex;align-items:center;justify-content:center}
+/* черги */
+.q{display:grid;gap:12px}
+.qc{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:#fff;border:2px solid var(--line);border-radius:var(--r);padding:16px;cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .1s}
+.qc:hover{border-color:var(--line2)}
+.qc:active{transform:scale(.99)}
+.qc[aria-checked=true]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.qc:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid rgba(30,158,90,.4);outline-offset:2px}
+.qh{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.dot{flex:0 0 24px;height:24px;border-radius:50%;border:2px solid var(--line2);display:flex;align-items:center;justify-content:center;transition:border-color .15s}
+.dot::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--ink);transform:scale(0);transition:transform .2s var(--ease)}
+.qc[aria-checked=true] .dot{border-color:var(--ink)}
+.qc[aria-checked=true] .dot::after{transform:scale(1)}
+.qt{font-weight:700;font-size:18px;line-height:1.2}
+.qs{font-size:15px;color:var(--ink2)}
+.bar{display:flex;gap:4px;align-items:stretch}
+.bar span{border-radius:8px;padding:8px 10px;font-size:13px;line-height:1.25;font-weight:600;min-width:0}
+.bar .p1{background:var(--ink);color:#fff}
+.bar .p2{background:var(--g-bg);color:var(--g-ink)}
+.bar .p2.pc{background:#E8E8E8;color:var(--ink)}
+.bar small{display:block;font-weight:400;opacity:.8}
+/* поля */
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fl label{display:block;font-size:14px;font-weight:600;color:var(--ink2);margin:0 0 6px}
+.stp{display:flex;align-items:center;border:1.5px solid var(--line2);border-radius:12px;overflow:hidden;background:#fff;transition:border-color .15s}
+.stp:focus-within{border-color:var(--ink)}
+.stp button{flex:0 0 46px;height:52px;border:0;background:var(--tile);font:inherit;font-size:24px;line-height:1;color:var(--ink);cursor:pointer;touch-action:manipulation}
+.stp button:active{background:#E4E4E4}
+.stp input{flex:1;min-width:0;width:100%;height:52px;border:0;text-align:center;font:inherit;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink);background:transparent;-moz-appearance:textfield}
+.stp input::-webkit-outer-spin-button,.stp input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.total{margin-top:12px;background:var(--tile);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:15px;color:var(--ink2)}
+.total b{font-size:20px;color:var(--ink);font-variant-numeric:tabular-nums}
+/* внесок */
+.pills{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.pills button{height:48px;border:1.5px solid var(--line2);background:#fff;border-radius:12px;font:inherit;font-weight:700;font-size:17px;cursor:pointer;transition:background-color .15s,color .15s,border-color .15s;touch-action:manipulation}
+.pills button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.rng{display:flex;align-items:center;gap:12px}
+.rng input{flex:1;accent-color:var(--g);height:32px;cursor:pointer}
+.rng output{min-width:52px;text-align:right;font-weight:700;font-size:18px;font-variant-numeric:tabular-nums}
+.fsum{font-size:15px;color:var(--ink2);margin-top:4px}
+/* результат */
+.res{background:var(--ink);color:#fff;border-radius:20px;padding:20px 18px 18px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cap{font-size:15px;font-weight:700;margin-bottom:12px}
+.lbl{font-size:14px;color:#B8B8B8;font-weight:600;margin-bottom:6px}
+.big{font-size:34px;line-height:1;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.big small{font-size:16px;color:#B8B8B8;font-weight:600;letter-spacing:0;margin-left:3px}
+.usd{font-size:14px;color:#B8B8B8;margin-top:6px;font-variant-numeric:tabular-nums}
+.chart{display:flex;align-items:flex-end;gap:4px;height:90px;margin:24px 0 8px;position:relative}
+.col{display:flex;flex-direction:column;justify-content:flex-end;height:100%;min-width:0;transition:flex-grow .25s var(--ease)}
+.col i{display:block;border-radius:8px 8px 3px 3px;transition:height .25s var(--ease)}
+.col.c1 i{background:#fff}.col.c2 i{background:#3BC77F}
+.col.c2.pc i{background:#C9C9C9}
+.cl{display:flex;gap:4px;font-size:13px;color:#B8B8B8}
+.cl span{min-width:0;transition:flex-grow .25s var(--ease)}
+.cl span:last-child{text-align:right}
+.keyl{display:flex;align-items:center;gap:6px;justify-content:center;font-size:13px;color:#fff;margin-top:-2px}
+dl{margin:18px 0 0;border-top:1px solid #333;padding-top:14px;display:grid;grid-template-columns:1fr auto;gap:9px 14px;font-size:16px}
+dt{color:#B8B8B8}dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+dl .tt{color:#fff;font-weight:700;font-size:17px}
+/* налаштування */
+details{margin-top:14px;border:1.5px solid var(--line);border-radius:var(--r)}
+summary{list-style:none;cursor:pointer;padding:15px 16px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform .2s var(--ease);margin-right:4px}
+details[open] summary::after{transform:rotate(-135deg)}
+.tune{padding:0 16px 16px;display:grid;gap:18px}
+.tune .top{display:flex;justify-content:space-between;font-size:15px;color:var(--ink2);margin-bottom:4px}
+.tune .top b{color:var(--ink);font-variant-numeric:tabular-nums}
+.tune input[type=range]{width:100%;accent-color:var(--g);height:30px}
+.tune .stp{max-width:220px}
+/* конкуренти */
+.cmp{display:grid;gap:10px}
+.cc{border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.cc h3{margin:0 0 8px;font-size:17px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.cc h3 span{font-size:14px;font-weight:600;color:var(--ink2);text-align:right}
+.cc ul{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:15px}
+.cc li{display:grid;grid-template-columns:118px 1fr;gap:8px}
+.cc li em{font-style:normal;color:var(--ink2)}
+.todo{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.todo li{background:var(--tile);border-radius:12px;padding:12px 14px;font-size:16px}
+.src{font-size:14px;color:var(--ink3);margin-top:28px}
+/* липка панель */
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:10;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(17,17,17,.92);-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);color:#fff;transform:translateY(110%);transition:transform .25s var(--ease)}
+.sticky.on{transform:none}
+.sticky button{all:unset;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:688px;margin:0 auto;width:100%;font-size:15px}
+.sticky b{font-size:20px;font-variant-numeric:tabular-nums}
+.sticky .s{color:#B8B8B8;font-size:13px;display:block}
+.sticky .arr{flex:0 0 auto;font-size:14px;color:#3BC77F;font-weight:700}
+@media (min-width:700px){
+  h1{font-size:40px}.q{grid-template-columns:1fr 1fr}.big{font-size:44px}.cmp{grid-template-columns:1fr 1fr}
+}
+@media (max-width:370px){.big{font-size:28px}.pills button{font-size:15px}.cc li{grid-template-columns:100px 1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body><main>
+
+<h1>Розстрочка як у «Республіки»</h1>
+<p class=lead><b>Половина до ключів, решта після.</b> Порахуйте нашу квартиру за їхньою схемою.</p>
+<ul class=chips aria-label="Головне">
+  <li>Внесок від 0</li><li>50% до ключів</li><li>Платежі в доларах</li><li>До 7 років у рекламі</li>
+</ul>
+
+<section class=step>
+  <h2><i>1</i>Оберіть чергу</h2>
+  <div class=q role=radiogroup aria-label="Черга">
+    <button class=qc role=radio aria-checked=true data-q=a>
+      <div class=qh><span class=dot></span><div><div class=qt>Здача через 2 роки</div><div class=qs>разом 5 років, без відсотків</div></div></div>
+      <div class=bar><span class=p1 style="flex:2">2 роки<small>до ключів</small></span><span class=p2 style="flex:3">3 роки<small>0% після ключів</small></span></div>
+    </button>
+    <button class=qc role=radio aria-checked=false data-q=b>
+      <div class=qh><span class=dot></span><div><div class=qt>Здача через 3 роки</div><div class=qs>разом 8 років, після ключів до 6%</div></div></div>
+      <div class=bar><span class=p1 style="flex:3">3 роки<small>до ключів</small></span><span class="p2 pc" style="flex:5">5 років<small>до 6% річних</small></span></div>
+    </button>
+  </div>
+</section>
+
+<section class=step>
+  <h2><i>2</i>Ціна квартири</h2>
+  <div class=fields>
+    <div class=fl><label for=area>Площа, м²</label>
+      <div class=stp><button type=button data-for=area data-d=-1 aria-label="Менше на 1 м²">−</button><input id=area type=number inputmode=decimal min=1 step=0.1 value=50><button type=button data-for=area data-d=1 aria-label="Більше на 1 м²">+</button></div></div>
+    <div class=fl><label for=price>Ціна за м², ₴</label>
+      <div class=stp><button type=button data-for=price data-d=-1000 aria-label="Менше на 1000 ₴">−</button><input id=price type=number inputmode=numeric min=1000 step=1000 value=50000><button type=button data-for=price data-d=1000 aria-label="Більше на 1000 ₴">+</button></div></div>
+  </div>
+  <div class=total>Ціна квартири <b id=tot>0 ₴</b></div>
+</section>
+
+<section class=step>
+  <h2><i>3</i>Перший внесок</h2>
+  <div class=pills role=group aria-label="Швидкий вибір внеску">
+    <button data-fp=0 aria-pressed=true>0%</button><button data-fp=10 aria-pressed=false>10%</button><button data-fp=30 aria-pressed=false>30%</button><button data-fp=50 aria-pressed=false>50%</button>
+  </div>
+  <div class=rng><input id=first type=range min=0 max=50 step=1 value=0 aria-label="Перший внесок, відсотків"><output id=firstv for=first>0%</output></div>
+  <div class=fsum id=fsum></div>
+</section>
+
+<section class=step id=result aria-live=polite>
+  <h2><i>4</i>Скільки платити</h2>
+  <div class=res>
+    <div class=cap>Платіж щомісяця</div>
+    <div class=pair>
+      <div><div class=lbl>До ключів</div><div class=big><span id=m1>0</span><small>₴</small></div><div class=usd id=m1u></div></div>
+      <div><div class=lbl>Після ключів</div><div class=big><span id=m2>0</span><small>₴</small></div><div class=usd id=m2u></div></div>
+    </div>
+    <div class=chart aria-hidden=true>
+      <div class="col c1" id=c1><i id=h1></i></div>
+      <div class="col c2" id=c2><i id=h2></i></div>
+    </div>
+    <div class=cl aria-hidden=true><span id=l1></span><span id=l2></span></div>
+    <dl>
+      <dt>Перший внесок</dt><dd id=d-first></dd>
+      <dt>До ключів, щомісяця разом</dt><dd id=d-pre></dd>
+      <dt>Після ключів, залишок</dt><dd id=d-rest></dd>
+      <dt>Здорожчення</dt><dd id=d-mk></dd>
+      <dt class=tt>Разом заплатить</dt><dd class=tt id=d-total></dd>
+    </dl>
+  </div>
+  <details>
+    <summary>Змінити строки, ставку, курс</summary>
+    <div class=tune>
+      <div><div class=top><label for=n1>До ключів</label><b id=n1v></b></div><input id=n1 type=range min=6 max=48 step=6></div>
+      <div><div class=top><label for=n2>Після ключів</label><b id=n2v></b></div><input id=n2 type=range min=6 max=96 step=6></div>
+      <div><div class=top><label for=rate>Здорожчення після ключів</label><b id=ratev></b></div><input id=rate type=range min=0 max=12 step=0.5></div>
+      <div><div class=top><label for=usd>Курс долара, ₴</label></div>
+        <div class=stp><button type=button data-for=usd data-d=-0.1 aria-label="Менше">−</button><input id=usd type=number inputmode=decimal min=1 step=0.01 value=45.43><button type=button data-for=usd data-d=0.1 aria-label="Більше">+</button></div></div>
+    </div>
+  </details>
+</section>
+
+<section class=step>
+  <h2>Інші забудовники</h2>
+  <div class=cmp>
+    <div class=cc><h3>Республіка <span>від 0</span></h3><ul>
+      <li><em>Як платять</em>50% до ключів, потім 3 або 5 років</li>
+      <li><em>Здорожчення</em>0% або до 6% річних, привʼязка до $</li></ul></div>
+    <div class=cc><h3>Свідомий <span>30%</span></h3><ul>
+      <li><em>Як платять</em>50% до введення, решта щомісяця до 2030</li>
+      <li><em>Приклад</em>60 міс по 29 200 ₴</li>
+      <li><em>Здорожчення</em>немає, ціна 61 000 ₴ за м²</li></ul></div>
+    <div class=cc><h3>Orange Park <span>«30 800»</span></h3><ul>
+      <li><em>Як платять</em>до 30 міс</li>
+      <li><em>Здорожчення</em>закладено в графік, привʼязка до $</li></ul></div>
+    <div class=cc><h3>Нішпарк <span>30%</span></h3><ul>
+      <li><em>Як платять</em>не уточнили</li></ul></div>
+    <div class=cc><h3>Плаза квартал</h3><ul>
+      <li><em>Приклад</em>1-кімнатна 1 626 700 ₴ на 60 міс</li>
+      <li><em>Здорожчення</em>закладено в ціну метра</li></ul></div>
+    <div class=cc><h3>ПриватБанк <span>кредит</span></h3><ul>
+      <li><em>Строк</em>до 20 років</li>
+      <li><em>Ставка</em>17,5% або 18% річних, не перевірено</li></ul></div>
+  </div>
+</section>
+
+<section class=step>
+  <h2>Що уточнити</h2>
+  <ul class=todo>
+    <li>Черга через 3 роки: разом 7 чи 8 років.</li>
+    <li>Як рахують 6%: на залишок, як кредит, чи разово.</li>
+    <li>Зразок договору: як там записані черги.</li>
+  </ul>
+  <p class=src>Схема зі слів колеги після розмови з відділом продажу «Республіки», нарада 18.11.2026. На їхньому сайті її немає. 6% тут рахуємо як кредит на залишок.</p>
+</section>
+
+</main>
+<div class=sticky id=sticky><button type=button aria-label="До розрахунку"><span><span class=s>До ключів · Після</span><b id=sm></b></span><span class=arr>Детально ↓</span></button></div>
+
+<script>
+const Q={a:{n1:24,n2:36,rate:0},b:{n1:36,n2:60,rate:6}};
+const $=id=>document.getElementById(id);
+const f0=n=>Math.round(n).toLocaleString('uk-UA');
+const yrs=m=>{const y=Math.floor(m/12),r=m%12,py=y===1?'рік':(y>=2&&y<=4?'роки':'років');return (y?y+' '+py:'')+(y&&r?' ':'')+(r?r+' міс':'')};
+let q='a';
+function setQ(k){q=k;document.querySelectorAll('[data-q]').forEach(b=>b.setAttribute('aria-checked',b.dataset.q===k));
+  const s=Q[k];$('n1').value=s.n1;$('n2').value=s.n2;$('rate').value=s.rate;calc()}
+function plan(P,fp,n1,n2,rate){
+  const F=P*fp/100,K=Math.max(P/2,F),pre=K-F,R=P-K,i=rate/1200;
+  const m1=n1?pre/n1:0,m2=R<=0?0:(i?R*i/(1-Math.pow(1+i,-n2)):R/n2);
+  return{F,pre,R,m1,m2,mk:m2*n2-R};
+}
+function calc(){
+  const area=+$('area').value,price=+$('price').value,fp=+$('first').value,n1=+$('n1').value,n2=+$('n2').value,rate=+$('rate').value,usd=+$('usd').value||1;
+  const P=area>0&&price>0?area*price:0,p=plan(P,fp,n1,n2,rate),u=v=>'≈ $'+f0(v/usd);
+  $('tot').textContent=f0(P)+' ₴';
+  $('firstv').textContent=fp+'%';$('fsum').textContent=fp?'Це '+f0(p.F)+' ₴ одразу':'Нічого не платите одразу';
+  document.querySelectorAll('[data-fp]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.fp===fp));
+  $('m1').textContent=f0(p.m1);$('m2').textContent=f0(p.m2);$('m1u').textContent=u(p.m1);$('m2u').textContent=u(p.m2);
+  const mx=Math.max(p.m1,p.m2,1);
+  $('c1').style.flexGrow=n1;$('c2').style.flexGrow=n2;$('c2').classList.toggle('pc',rate>0);
+  $('h1').style.height=Math.max(3,p.m1/mx*100)+'%';$('h2').style.height=Math.max(3,p.m2/mx*100)+'%';
+  $('l1').textContent=yrs(n1)+' до ключів';$('l2').textContent=yrs(n2)+' після';$('l1').style.flexGrow=n1;$('l2').style.flexGrow=n2;
+  $('d-first').textContent=f0(p.F)+' ₴';$('d-pre').textContent=f0(p.pre)+' ₴';$('d-rest').textContent=f0(p.R)+' ₴';
+  $('d-mk').textContent=p.mk>0.5?f0(p.mk)+' ₴':'немає';$('d-total').textContent=f0(P+p.mk)+' ₴';
+  $('n1v').textContent=yrs(n1);$('n2v').textContent=yrs(n2);
+  $('ratev').textContent=rate?String(rate).replace('.',',')+'% річних':'немає';
+  $('sm').textContent=f0(p.m1)+' · '+f0(p.m2)+' ₴';
+}
+document.querySelectorAll('[data-q]').forEach(b=>b.addEventListener('click',()=>setQ(b.dataset.q)));
+document.querySelector('.q').addEventListener('keydown',e=>{if(['ArrowDown','ArrowRight','ArrowUp','ArrowLeft'].includes(e.key)){e.preventDefault();const k=q==='a'?'b':'a';setQ(k);document.querySelector('[data-q='+k+']').focus()}});
+document.querySelectorAll('[data-fp]').forEach(b=>b.addEventListener('click',()=>{$('first').value=b.dataset.fp;calc()}));
+document.querySelectorAll('[data-for]').forEach(b=>b.addEventListener('click',()=>{const i=$(b.dataset.for),d=+b.dataset.d,v=Math.max(+i.min||0,Math.round(((+i.value||0)+d)*100)/100);i.value=v;calc()}));
+['area','price','first','n1','n2','rate','usd'].forEach(id=>$(id).addEventListener('input',calc));
+const st=$('sticky');
+new IntersectionObserver(([e])=>st.classList.toggle('on',!e.isIntersecting&&e.boundingClientRect.top>0),{threshold:0}).observe(document.querySelector('.res'));
+st.querySelector('button').addEventListener('click',()=>$('result').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'}));
+setQ('a');
+</script>
+</body></html>
