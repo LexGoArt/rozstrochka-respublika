@@ -2,7 +2,7 @@
 <meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name=robots content="noindex,nofollow">
 <meta name=theme-color content="#F2F2F4">
-<title>Розстрочка як у Республіки</title>
+<title>Калькулятор розстрочки за моделлю ЖК «Республіка»</title>
 <link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel=stylesheet>
 <style>
@@ -40,7 +40,7 @@ h1{font-size:26px;line-height:1.15;letter-spacing:-.02em;font-weight:800;margin:
 .tl::before{content:"";position:absolute;left:5px;right:5px;top:5px;height:2px;border-radius:1px;background:var(--hair)}
 .tl i{position:absolute;top:0;width:12px;height:12px;border-radius:50%;background:#C7C7CC;margin-left:-6px}
 .tl .k{background:var(--ink);transition:left 220ms var(--ease)}
-.tll{position:relative;height:40px;font-size:14px;color:var(--ink2);margin-top:6px}
+.tll{position:relative;height:60px;font-size:14px;color:var(--ink2);margin-top:6px}
 .tll span{position:absolute;top:0;line-height:1.3}
 .tll small{display:block;font-size:12px;color:var(--ink3)}
 .tll .a{left:0}.tll .c{right:0;text-align:right}
@@ -51,6 +51,7 @@ h1{font-size:26px;line-height:1.15;letter-spacing:-.02em;font-weight:800;margin:
 .sl label{font-size:16px;color:var(--ink2)}
 .sl .v{font-size:20px;font-weight:700}
 .sl input{grid-column:1/-1}
+.sl .hint{grid-column:1/-1;font-size:14px;color:var(--ink3);margin-top:2px}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:40px;margin:0;background:transparent;cursor:pointer;--p:50%}
 input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:4px;background:linear-gradient(to right,var(--g) var(--p),var(--hair) var(--p))}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;margin-top:-11px;border-radius:50%;background:#fff;box-shadow:0 0 0 .5px rgba(0,0,0,.06),0 3px 8px rgba(0,0,0,.16),0 3px 1px rgba(0,0,0,.06);transition:transform 140ms var(--ease)}
@@ -84,39 +85,39 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head><body><main>
 
-<h1>Розстрочка на квартиру як у «Республіки»</h1>
+<h1>Калькулятор розстрочки за моделлю ЖК «Республіка»</h1>
 
 <div class=lay>
   <div>
-    <section class=card aria-label="Схема оплати">
-      <p class=cap>Схема оплати</p>
+    <section class=card aria-label="Етапи оплати">
+      <p class=cap>Етапи оплати</p>
       <div class=bar>
-        <div class="seg s1" id=s1><b id=s1b></b><span>внесок</span></div>
-        <div class="seg s2" id=s2><b id=s2b></b><span>до ключів<br>без відсотків</span></div>
+        <div class="seg s1" id=s1><b id=s1b></b><span>Перший внесок</span></div>
+        <div class="seg s2" id=s2><b id=s2b></b><span>До отримання ключів<br>без здорожчання</span></div>
         <div class="seg s3" id=s3><b>50%</b><span id=s3s></span></div>
       </div>
       <div class=tl aria-hidden=true><i style="left:5px"></i><i class=k id=kd></i><i style="left:calc(100% - 5px)"></i></div>
-      <div class=tll aria-hidden=true><span class=a>Договір<small>сьогодні</small></span><span class=b id=kl>Ключі<small id=kls></small></span><span class=c>Кінець<small id=kcs></small></span></div>
+      <div class=tll aria-hidden=true><span class=a>Договір<small>сьогодні</small></span><span class=b id=kl>Ключі<small id=kls></small></span><span class=c>Завершення<br>виплат<small id=kcs></small></span></div>
     </section>
     <section class=card aria-label="Розрахунок">
       <div class=sl><label for=area>Площа</label><span class="v num" id=area-v></span><input id=area type=range min=20 max=150 step=0.5 value=70></div>
       <div class=sl><label for=price>Ціна за м²</label><span class="v num" id=price-v></span><input id=price type=range min=20000 max=120000 step=500 value=54000></div>
       <div class=sl><label for=fp>Перший внесок</label><span class="v num" id=fp-v></span><input id=fp type=range min=0 max=50 step=1 value=10></div>
-      <div class=sl><label for=n1>Місяців до ключів</label><span class="v num" id=n1-v></span><input id=n1 type=range min=3 max=48 step=1 value=12></div>
-      <div class=sl><label for=n2>Років після ключів</label><span class="v num" id=n2-v></span><input id=n2 type=range min=1 max=5 step=1 value=5></div>
-      <div class=sl><label for=rate>Здорожчання, % річних</label><span class="v num" id=rate-v></span><input id=rate type=range min=0 max=12 step=0.5 value=6></div>
+      <div class=sl><label for=n1>До отримання ключів, міс.</label><span class="v num" id=n1-v></span><input id=n1 type=range min=3 max=48 step=1 value=12></div>
+      <div class=sl><label for=n2>Строк розстрочки після отримання ключів, років</label><span class="v num" id=n2-v></span><input id=n2 type=range min=1 max=5 step=1 value=5></div>
+      <div class=sl><label for=rate>Річне здорожчання, %</label><span class="v num" id=rate-v></span><small class=hint id=rate-h></small><input id=rate type=range min=0 max=12 step=0.5 value=6></div>
     </section>
   </div>
   <aside class=side aria-live=polite>
     <div class="card hero">
-      <div><div class=l>Щомісяця<br>до ключів</div><div class="n num" id=o-m1></div><div class=s id=o-m1s></div></div>
-      <div><div class=l>Щомісяця<br>після ключів</div><div class="n num" id=o-m2></div><div class=yrs id=yrs aria-hidden=true><i></i><i></i><i></i><i></i><i></i></div><div class=s id=o-m2s></div></div>
+      <div><div class=l>Щомісяця<br>до отримання ключів</div><div class="n num" id=o-m1></div><div class=s id=o-m1s></div></div>
+      <div><div class=l id=o-m2l>Перший платіж<br>після отримання ключів</div><div class="n num" id=o-m2></div><div class=s id=o-m2a></div><div class=yrs id=yrs aria-hidden=true><i></i><i></i><i></i><i></i><i></i></div><div class=s id=o-m2s></div></div>
     </div>
     <div class=sec>
-      <div class=t><div class=l>Ціна квартири</div><div class="n num" id=o-p></div></div>
+      <div class=t><div class=l>Базова вартість квартири</div><div class="n num" id=o-p></div></div>
       <div class=t><div class=l>Перший внесок</div><div class="n num" id=o-f></div></div>
-      <div class="t over"><div class=l>Переплата</div><div class="n num" id=o-mk></div><div class=s id=o-mks></div></div>
-      <div class="t sum"><div class=l>Разом</div><div class="n num" id=o-t></div></div>
+      <div class="t over"><div class=l>Сума здорожчання</div><div class="n num" id=o-mk></div><div class=s id=o-mks></div></div>
+      <div class="t sum"><div class=l>Загальна сума виплат</div><div class="n num" id=o-t></div></div>
     </div>
   </aside>
 </div>
@@ -129,7 +130,7 @@ const pct=v=>String(v).replace('.',',');
 const yr=y=>y+' '+(y===1?'рік':(y>=2&&y<=4?'роки':'років'));
 /* як у графіку «Республіки» від 19.11.2026: після ключів залишок ділиться на рівні частини, і платіж щомісяця росте; 6% річних = +0,48% на місяць */
 const grow=r=>r?Math.floor((Math.pow(1+r/100,1/12)-1)*1e4)/1e4:0;
-const LBL={area:v=>pct(v)+' м²',price:v=>f0(v)+' ₴',fp:v=>v+'%',n1:v=>String(v),n2:v=>String(v),rate:v=>pct(v)+'%'};
+const LBL={area:v=>pct(v)+' м²',price:v=>f0(v)+' ₴',fp:v=>v+'%',n1:v=>String(v),n2:v=>String(v),rate:v=>pct(v)};
 const ids=Object.keys(LBL);
 function fill(el){el.style.setProperty('--p',((el.value-el.min)/(el.max-el.min)*100)+'%')}
 function place(){if(!document.getElementById('kd'))return;const s3=$('s3'),bar=s3.parentNode,x=s3.offsetLeft-bar.offsetLeft-2,W=bar.offsetWidth,w=$('kl').offsetWidth/2;
@@ -139,27 +140,29 @@ function calc(){
   const P=v.area*v.price,F=P*v.fp/100,K=P/2,pre=K-F,R=P-K,n2=v.n2*12,g=grow(v.rate);
   const m1=pre/v.n1,m2=R/n2,last=m2*Math.pow(1+g,n2-1),after=g?m2*(Math.pow(1+g,n2)-1)/g:R,mk=after-R;
   $('o-m1').innerHTML=f0(m1)+'<small>₴</small>';
-  $('o-m1s').textContent=v.n1+' міс, рівно';
+  $('o-m1s').textContent=v.n1+' однакових щомісячних платежів';
   $('o-m2').innerHTML=f0(m2)+'<small>₴</small>';
-  $('o-m2s').innerHTML=g?'щомісяця +'+pct((g*100).toFixed(2))+'%<br>останній '+f0(last)+' ₴':yr(v.n2)+', рівно';
+  $('o-m2a').textContent=g?'':n2+' однакових щомісячних платежів';$('o-m2a').hidden=!!g;$('o-m2l').innerHTML=(g?'Перший платіж':'Щомісяця')+'<br>після отримання ключів';
+  $('o-m2s').innerHTML=g?'Останній платіж:<br>'+f0(last)+' ₴':'';
+  $('rate-h').textContent=g?'Діє лише після отримання ключів: кожен платіж на '+pct((g*100).toFixed(2))+'% більший за попередній':'Без здорожчання: усі платежі після отримання ключів однакові';
   /* стовпчик на кожен рік після ключів: сходинки показують, що платіж росте (точні суми в підписі) */
   const yb=document.querySelectorAll('#yrs i'),Y=v.n2;$('yrs').classList.toggle('free',!g);
   yb.forEach((b,k)=>{b.hidden=k>=Y;b.style.height=(g&&Y>1?44+56*k/(Y-1):60)+'%';b.style.opacity=Y>1?(.28+.72*k/(Y-1)).toFixed(2):1});
   $('o-p').textContent=f0(P)+' ₴';
   $('o-f').textContent=F?f0(F)+' ₴':'немає';
   $('o-mk').textContent=mk>0.5?f0(mk)+' ₴':'немає';
-  $('o-mks').textContent=mk>0.5?pct((mk/P*100).toFixed(1))+'% від ціни':'';
+  $('o-mks').textContent=mk>0.5?pct((mk/P*100).toFixed(1))+'% вартості квартири':'';
   $('o-t').textContent=f0(P+mk)+' ₴';
   $('sm1').textContent=f0(m1)+' ₴';$('sm2').textContent=f0(m2)+' ₴';
   /* схема */
   $('s1').hidden=!v.fp;$('s1b').textContent=v.fp+'%';$('s2b').textContent=(50-v.fp)+'%';
   $('s1').style.flexGrow=v.fp;$('s2').style.flexGrow=50-v.fp;$('s3').style.flexGrow=50;
   $('s2').hidden=v.fp>=50;
-  $('s3s').textContent=v.rate?'після ключів, +'+pct(v.rate)+'%':'після ключів';
+  $('s3s').innerHTML=v.rate?'Після отримання ключів':'Після отримання ключів<br>без здорожчання';
   $('s3').classList.toggle('free',!v.rate);
   $('leg2').hidden=!v.rate;
   $('kls').textContent='через '+v.n1+' міс';
-  $('kcs').textContent='ще '+yr(v.n2);
+  $('kcs').textContent='ще через '+yr(v.n2);
   requestAnimationFrame(place);
 }
 document.querySelectorAll('.seg').forEach(s=>{s.style.flexBasis='0';s.style.flexShrink='1'});
