@@ -127,7 +127,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
       <div class=sl><label for=price>Ціна за м²</label><span class="v num" id=price-v></span><input id=price type=range min=20000 max=120000 step=500 value=54000></div>
       <div class=sl><label for=fp>Перший внесок</label><span class="v num" id=fp-v></span><input id=fp type=range min=0 max=50 step=1 value=10></div>
       <div class=sl><label for=n1>До отримання ключів, міс.</label><span class="v num" id=n1-v></span><input id=n1 type=range min=3 max=48 step=1 value=12></div>
-      <div class=sl><label for=n2>Строк розстрочки після отримання ключів, років</label><span class="v num" id=n2-v></span><input id=n2 type=range min=1 max=5 step=1 value=5></div>
+      <div class=sl><label for=n2>Строк розстрочки після отримання ключів</label><span class="v num" id=n2-v></span><input id=n2 type=range min=0.5 max=10 step=0.5 value=5></div>
       <div class=sl><label for=rate>Річне здорожчання, %</label><span class="v num" id=rate-v></span><small class=hint id=rate-h></small><input id=rate type=range min=0 max=12 step=0.5 value=6></div>
     </section>
   </div>
@@ -157,13 +157,15 @@ const pct=v=>String(v).replace('.',',');
 const yr=y=>y+' '+(y===1?'рік':(y>=2&&y<=4?'роки':'років'));
 /* як у графіку «Республіки» від 19.11.2026: після ключів залишок ділиться на рівні частини, і платіж щомісяця росте; 6% річних = +0,48% на місяць */
 const grow=r=>r?Math.floor((Math.pow(1+r/100,1/12)-1)*1e4)/1e4:0;
-const LBL={area:v=>pct(v)+' м²',price:v=>f0(v)+' ₴',fp:v=>v+'%',n1:v=>String(v),n2:v=>String(v),rate:v=>pct(v)};
+const LBL={area:v=>pct(v)+' м²',price:v=>f0(v)+' ₴',fp:v=>v+'%',n1:v=>String(v),n2:v=>ym(Math.round(v*12)),rate:v=>pct(v)};
 const ids=Object.keys(LBL);
 function fill(el){el.style.setProperty('--p',((el.value-el.min)/(el.max-el.min)*100)+'%')}
 function place(){if(!document.getElementById('kd'))return;const s3=$('s3'),bar=s3.parentNode,x=s3.offsetLeft-bar.offsetLeft-2,W=bar.offsetWidth,w=$('kl').offsetWidth/2;
   $('kd').style.left=x+'px';$('kl').style.left=Math.min(Math.max(x,w+72),W-w-72)+'px'}
 /* загальний строк: 72 міс = 6 років, 78 = 6,5 року, 73 = 6 років 1 міс */
-function term(m){const y=Math.floor(m/12),r=m%12;return r===0?yr(y):r===6?y+',5 року':yr(y)+' '+r+' міс'}
+function term(m){const y=Math.floor(m/12),r=m%12;return !y?r+' міс':r===0?yr(y):r===6?y+',5 року':yr(y)+' '+r+' міс'}
+/* строк після ключів кроком пів року: 4 роки 6 міс, 5 років, 6 міс */
+function ym(m){const y=Math.floor(m/12),r=m%12;return !y?r+' міс':r?yr(y)+' '+r+' міс':yr(y)}
 /* графік по місяцях: до ключів одним рядком, після ключів кожен місяць */
 let S=null;
 function list(){if(!S)return;const o=[];
@@ -181,7 +183,7 @@ function calc(){
   $('o-m2a').textContent=g?'':n2+' однакових щомісячних платежів';$('o-m2a').hidden=!!g;$('o-m2l').textContent=(g?'Перший платіж':'Щомісяця')+' після отримання ключів';
   $('lastw').hidden=!g;$('o-m2s').innerHTML=f0(last)+'<small>₴</small>';
   S={F,m1,n1:v.n1,m2,g,n2};if($('sched').open)list();
-  const T=v.n1+n2;$('tot').textContent=term(T);$('tots').textContent=v.n1+' міс до отримання ключів і '+yr(v.n2)+' після';
+  const T=v.n1+n2;$('tot').textContent=term(T);$('tots').textContent=v.n1+' міс до отримання ключів і '+ym(n2)+' після';
   $('rate-h').textContent=g?'Діє лише після отримання ключів: кожен платіж на '+pct((g*100).toFixed(2))+'% більший за попередній':'Без здорожчання: усі платежі після отримання ключів однакові';
   $('mn1').innerHTML=f0(m1)+'<small>₴</small>';$('mn2').innerHTML=f0(m2)+'<small>₴</small>';$('mn3').innerHTML=f0(last)+'<small>₴</small>';
   $('mc3').hidden=!g;$('mini').classList.toggle('two',!g);$('ml2').innerHTML=(g?'Перший платіж':'Щомісяця')+' після&nbsp;ключів';
@@ -199,7 +201,7 @@ function calc(){
   $('s3').classList.toggle('free',!v.rate);
   $('leg2').hidden=!v.rate;
   $('kls').textContent='через '+v.n1+' міс';
-  $('kcs').textContent='ще через '+yr(v.n2);
+  $('kcs').textContent='ще через '+ym(n2);
   requestAnimationFrame(place);
 }
 document.querySelectorAll('.seg').forEach(s=>{s.style.flexBasis='0';s.style.flexShrink='1'});
