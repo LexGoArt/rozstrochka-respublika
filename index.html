@@ -94,6 +94,16 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 }
 @media (max-width:899px){.lay>.side{display:contents}.lay{display:flex;flex-direction:column}.lay .hero{order:-1;margin-bottom:12px}.lay .sec{margin-top:12px}}
 @media (max-width:360px){.hero .n{font-size:30px}.seg span{font-size:11px}}
+/* компактна панель на телефоні: зʼявляється, коли велика картка платежів пішла вгору */
+.mini{position:fixed;z-index:20;left:12px;right:12px;top:calc(8px + env(safe-area-inset-top));display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:10px 4px;border-radius:18px;background:rgba(255,255,255,.86);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);box-shadow:0 10px 30px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.06);transform:translateY(calc(-100% - 16px)) scale(.96);opacity:0;pointer-events:none;transition:transform 380ms cubic-bezier(.32,.72,0,1),opacity 240ms var(--ease)}
+.mini.on{transform:none;opacity:1;pointer-events:auto}
+.mini>div{padding:0 10px;min-width:0}.mini>div+div{border-left:1px solid var(--hair)}
+.mini .l{font-size:12px;line-height:1.25;color:var(--ink2)}.mini:not(.two) .l{min-height:2.5em}
+.mini .n{font-size:18px;font-weight:800;letter-spacing:-.02em;margin-top:3px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mini .n small{font-size:12px;font-weight:600;margin-left:2px;color:var(--ink2)}
+.mini.two{grid-template-columns:repeat(2,1fr)}
+@media (min-width:900px){.mini{display:none}}
+@media (max-width:360px){.mini .n{font-size:16px}.mini>div{padding:0 7px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head><body><main>
 
@@ -138,6 +148,8 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 </div>
 
 </main>
+<div class=mini id=mini aria-hidden=true><div><div class=l>Щомісяця до&nbsp;ключів</div><div class=n id=mn1></div></div><div><div class=l id=ml2>Перший платіж після&nbsp;ключів</div><div class=n id=mn2></div></div><div id=mc3><div class=l>Останній платіж</div><div class=n id=mn3></div></div></div>
+
 <script>
 const DUMMY=document.createElement('div');DUMMY.style.setProperty=()=>{};const $=id=>document.getElementById(id)||DUMMY;
 const f0=n=>Math.round(n).toLocaleString('uk-UA');
@@ -171,6 +183,8 @@ function calc(){
   S={F,m1,n1:v.n1,m2,g,n2};if($('sched').open)list();
   const T=v.n1+n2;$('tot').textContent=term(T);$('tots').textContent=v.n1+' міс до отримання ключів і '+yr(v.n2)+' після';
   $('rate-h').textContent=g?'Діє лише після отримання ключів: кожен платіж на '+pct((g*100).toFixed(2))+'% більший за попередній':'Без здорожчання: усі платежі після отримання ключів однакові';
+  $('mn1').innerHTML=f0(m1)+'<small>₴</small>';$('mn2').innerHTML=f0(m2)+'<small>₴</small>';$('mn3').innerHTML=f0(last)+'<small>₴</small>';
+  $('mc3').hidden=!g;$('mini').classList.toggle('two',!g);$('ml2').innerHTML=(g?'Перший платіж':'Щомісяця')+' після&nbsp;ключів';
   $('o-p').textContent=f0(P)+' ₴';
   $('o-f').textContent=F?f0(F)+' ₴':'немає';
   $('o-mk').textContent=mk>0.5?f0(mk)+' ₴':'немає';
@@ -191,6 +205,8 @@ function calc(){
 document.querySelectorAll('.seg').forEach(s=>{s.style.flexBasis='0';s.style.flexShrink='1'});
 ids.forEach(k=>$(k).addEventListener('input',calc));
 $('sched').addEventListener('toggle',()=>{if($('sched').open)list()});
+/* панель зʼявляється, щойно низ великої картки зник під верхнім краєм */
+new IntersectionObserver(([e])=>{$('mini').classList.toggle('on',!e.isIntersecting&&e.boundingClientRect.top<0)},{rootMargin:'-24px 0px 0px 0px'}).observe(document.querySelector('.hero'));
 addEventListener('resize',place);$('s3').addEventListener('transitionend',place);
 const segs=document.querySelectorAll('.seg');segs.forEach(x=>x.style.transition='none');
 calc();
