@@ -176,6 +176,8 @@ function calc(){
 document.querySelectorAll('.seg').forEach(s=>{s.style.flexBasis='0';s.style.flexShrink='1'});
 ids.forEach(k=>$(k).addEventListener('input',calc));
 addEventListener('resize',place);$('s3').addEventListener('transitionend',place);
+const segs=document.querySelectorAll('.seg');segs.forEach(x=>x.style.transition='none');
 calc();
+requestAnimationFrame(()=>requestAnimationFrame(()=>segs.forEach(x=>x.style.transition='')));
 </script>
 </body></html>

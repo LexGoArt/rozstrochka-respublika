@@ -1,0 +1,125 @@
+<!doctype html><html lang=uk><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name=robots content="noindex,nofollow">
+<title>Варіант B · Газетний</title>
+<link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel=stylesheet>
+<style>
+/* Система B «Газетний»: одна гарнітура для тексту (Onest), серіф для великих чисел (Source Serif 4).
+   Тло біле, лінії 1px, жодних плашок. Ритм 8px. Ієрархія тільки розміром і товщиною. */
+:root{--ink:#111;--ink2:#5A5A5A;--ink3:#8C8C8C;--rule:#111;--hair:#E3E3E3;--g:#1E9E5A;--r:#C2410C;--ease:cubic-bezier(.23,1,.32,1)}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff;color:var(--ink);font:17px/1.45 Onest,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:1040px;margin:0 auto;padding:20px 16px 56px}
+[hidden]{display:none!important}
+.num{font-variant-numeric:tabular-nums lining-nums;white-space:nowrap}
+.mast{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--rule);padding-bottom:10px;margin-bottom:24px}
+.mast h1{font-size:18px;font-weight:600;margin:0;letter-spacing:-.01em}
+.mast span{font-size:13px;color:var(--ink3)}
+/* головні числа */
+.hero{display:grid;gap:22px;margin-bottom:28px}
+.hero .l{font-size:14px;color:var(--ink2);display:flex;gap:8px;align-items:baseline}
+.hero .l b{font-weight:600;color:var(--ink)}
+.hero .n{font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:56px;line-height:1;letter-spacing:-.02em;margin-top:6px}
+.hero .n small{font-family:Onest,sans-serif;font-size:24px;font-weight:500;margin-left:6px;color:var(--ink2)}
+.hero .s{font-size:15px;color:var(--ink2);margin-top:6px}
+.hero>div+div{border-top:1px solid var(--hair);padding-top:20px}
+/* схема як одна лінія */
+.sch{margin:0 0 32px}
+.bar{display:flex;gap:3px;height:10px}
+.seg{min-width:0;transition:flex-grow 220ms var(--ease)}
+.s1,.s2{background:var(--g)}.s3{background:var(--r)}.s3.free{background:var(--g)}
+.s1{opacity:.55}
+.seg b,.seg span{display:none}
+.legend{display:flex;justify-content:space-between;gap:8px;margin-top:10px;font-size:14px;color:var(--ink2)}
+.legend b{display:block;color:var(--ink);font-weight:600;font-size:15px}
+.legend div:last-child{text-align:right}
+.legend div:nth-child(2){text-align:center}
+/* повзунки */
+.sls{border-top:2px solid var(--rule)}
+.sl{display:grid;grid-template-columns:1fr auto;align-items:baseline;column-gap:12px;padding:14px 0 4px;border-bottom:1px solid var(--hair)}
+.sl label{font-size:16px;color:var(--ink2)}
+.sl .v{font-family:"Source Serif 4",Georgia,serif;font-size:24px;font-weight:600}
+.sl input{grid-column:1/-1}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:40px;margin:0;background:transparent;cursor:pointer;--p:50%}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:linear-gradient(to right,var(--ink) var(--p),var(--hair) var(--p))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-12px;border-radius:50%;background:var(--ink);border:0;transition:transform 140ms var(--ease)}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.15)}
+input[type=range]::-moz-range-track{height:2px;background:var(--hair)}
+input[type=range]::-moz-range-progress{height:2px;background:var(--ink)}
+input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--ink);border:0}
+input[type=range]:focus{outline:none}
+input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(30,158,90,.4)}
+/* підсумок як рядки з крапками */
+.ledger{margin-top:28px;border-top:2px solid var(--rule)}
+.row{display:flex;align-items:baseline;gap:8px;padding:12px 0;border-bottom:1px solid var(--hair);font-size:16px}
+.row .l{color:var(--ink2)}
+.row i{flex:1;border-bottom:1px dotted #C8C8C8;transform:translateY(-4px)}
+.row .n{font-weight:600}
+.row .s{font-size:14px;color:var(--ink3);margin-left:6px;font-weight:400}
+.row.over .n{color:var(--r)}
+.row.sum{border-bottom:2px solid var(--rule)}.row.sum .l{color:var(--ink);font-weight:600}.row.sum .n{font-family:"Source Serif 4",Georgia,serif;font-size:24px}
+/* нижній рядок на телефоні, коли великі числа сховались */
+.strip{position:fixed;left:0;right:0;bottom:0;z-index:5;background:#fff;border-top:2px solid var(--rule);padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr;gap:12px;transform:translateY(110%);transition:transform 220ms var(--ease)}
+.strip.on{transform:none}
+.strip span{display:block;font-size:13px;color:var(--ink2)}
+.strip b{font-family:"Source Serif 4",Georgia,serif;font-size:22px;font-weight:600}
+body.bar main{padding-bottom:110px}
+@media (min-width:900px){.strip{display:none}}
+@media (min-width:900px){
+  main{padding:40px 32px 72px}
+  .mast h1{font-size:22px}
+  .top{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end;margin-bottom:8px}
+  .hero{grid-template-columns:1fr 1fr;gap:32px;margin:0}
+  .hero>div+div{border-top:0;padding-top:0;border-left:1px solid var(--hair);padding-left:32px}
+  .hero .n{font-size:72px}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+  .ledger{margin-top:0}
+}
+@media (max-width:360px){.hero .n{font-size:46px}.hero .n small{font-size:20px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body><main>
+
+<header class=mast><h1>Розстрочка на квартиру як у «Республіки»</h1></header>
+
+<section class=hero aria-live=polite>
+  <div><div class=l><b>Щомісяця до ключів</b></div><div class="n num" id=o-m1></div><div class=s id=o-m1s></div></div>
+  <div><div class=l><b>Щомісяця після ключів</b></div><div class="n num" id=o-m2></div><div class=s id=o-m2s></div></div>
+</section>
+
+<section class=sch aria-label="Схема оплати">
+  <div class=bar>
+    <div class="seg s1" id=s1><b id=s1b></b></div>
+    <div class="seg s2" id=s2><b id=s2b></b></div>
+    <div class="seg s3" id=s3><span id=s3s></span></div>
+  </div>
+  <div class=legend>
+    <div><b>Договір</b>внесок і рівні платежі</div>
+    <div><b>Ключі</b><span id=kls></span></div>
+    <div><b>Кінець</b><span id=kcs></span></div>
+  </div>
+</section>
+
+<div class=cols>
+  <div class=sls>
+    <div class=sl><label for=area>Площа</label><span class="v num" id=area-v></span><input id=area type=range min=20 max=150 step=0.5 value=70></div>
+    <div class=sl><label for=price>Ціна за м²</label><span class="v num" id=price-v></span><input id=price type=range min=20000 max=120000 step=500 value=54000></div>
+    <div class=sl><label for=fp>Перший внесок</label><span class="v num" id=fp-v></span><input id=fp type=range min=0 max=50 step=1 value=10></div>
+    <div class=sl><label for=n1>Місяців до ключів</label><span class="v num" id=n1-v></span><input id=n1 type=range min=3 max=48 step=1 value=12></div>
+    <div class=sl><label for=n2>Років після ключів</label><span class="v num" id=n2-v></span><input id=n2 type=range min=1 max=10 step=1 value=5></div>
+    <div class=sl><label for=rate>Здорожчання, % річних</label><span class="v num" id=rate-v></span><input id=rate type=range min=0 max=12 step=0.5 value=6></div>
+  </div>
+  <div class=ledger aria-live=polite>
+    <div class=row><span class=l>Ціна квартири</span><i></i><span class="n num" id=o-p></span></div>
+    <div class=row><span class=l>Перший внесок</span><i></i><span class="n num" id=o-f></span></div>
+    <div class="row over"><span class=l>Переплата</span><i></i><span class="n num" id=o-mk></span><span class=s id=o-mks></span></div>
+    <div class="row sum"><span class=l>Разом</span><i></i><span class="n num" id=o-t></span></div>
+  </div>
+</div>
+
+</main>
+<div class=strip id=strip aria-hidden=true><div><span>До ключів</span><b class=num id=sm1></b></div><div><span>Після ключів</span><b class=num id=sm2></b></div></div>
+<script src=calc.js></script>
+<script>new IntersectionObserver(([e])=>{const on=!e.isIntersecting&&e.boundingClientRect.top<0;document.getElementById('strip').classList.toggle('on',on);document.body.classList.toggle('bar',on)}).observe(document.querySelector('.hero'))</script>
+</body></html>
